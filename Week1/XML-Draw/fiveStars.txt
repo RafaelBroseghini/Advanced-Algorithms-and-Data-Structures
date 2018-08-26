@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<GraphicsCommands>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+</GraphicsCommands>
