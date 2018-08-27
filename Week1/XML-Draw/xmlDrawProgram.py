@@ -374,8 +374,25 @@ class DrawingApplication(tkinter.Frame):
         textBoxSize.set("John Doe")
         textBoxEntry.pack()
 
+        fontBox = tkinter.Label(sideBar, text="Choose a font")
+        fontBox.pack()
+        fontBoxSize = tkinter.StringVar(sideBar)
+        fontBoxSize.set("Times")
+        fontBoxEntry = tkinter.OptionMenu(sideBar, fontBoxSize, "Arial", "Courier", "Helvetica", "Times")
+        fontBoxEntry.pack(fill=tkinter.BOTH)
+
+        SIZES = ["16", "18", "20","22", "24", "26", "28", "30"]
+        pointBox = tkinter.Label(sideBar, text="Choose a point")
+        pointBox.pack()
+        pointBoxSize = tkinter.StringVar(sideBar)
+        pointBoxSize.set("16")
+        pointBoxEntry = tkinter.OptionMenu(sideBar, pointBoxSize, *SIZES)
+        pointBoxEntry.pack(fill=tkinter.BOTH)
+
+        # This method calls the paintcommand object to draw the text from the text box on the 
+        # canvas. It takes the text, color pen, font size and font as class members.
         def drawString():
-            cmd = PaintCommand(str(textBoxSize.get()), penColor.get(), "Times 18 italic")
+            cmd = PaintCommand(str(textBoxSize.get()), penColor.get(), str(fontBoxSize.get() + " " + pointBoxSize.get()))
             cmd.draw(canvas, theTurtle)
 
         paintButton = tkinter.Button(sideBar, text = "Draw Text", command=drawString)
