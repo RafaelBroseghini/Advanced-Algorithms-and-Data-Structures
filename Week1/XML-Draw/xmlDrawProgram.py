@@ -81,7 +81,9 @@ class PaintCommand:
     def draw(self, canvas, turtle):
         x, y = turtle.pos()
         print(x, y)
-        canvas.create_text(x,y,text=self.text, fill=self.fill, font=self.font)
+        # The y coordinate was providing an unexpected behavior
+        # of being inverted (positive instead of negative sign)
+        canvas.create_text(x,-y,text=self.text, fill=self.fill, font=self.font)
     
     def __str__(self):
         pass
@@ -372,6 +374,13 @@ class DrawingApplication(tkinter.Frame):
         textBoxSize.set("John Doe")
         textBoxEntry.pack()
 
+        def drawString():
+            cmd = PaintCommand(str(textBoxSize.get()), penColor.get(), "Times 18 italic")
+            cmd.draw(canvas, theTurtle)
+
+        paintButton = tkinter.Button(sideBar, text = "Draw Text", command=drawString)
+        paintButton.pack(fill=tkinter.BOTH)
+
         # A button widget calls an event handler when it is pressed. The circleHandler
         # function below is the event handler when the Draw Circle button is pressed. 
         def circleHandler():
@@ -403,18 +412,7 @@ class DrawingApplication(tkinter.Frame):
         
         starButton = tkinter.Button(sideBar, text = "Draw a Star", command=starHandler)
         starButton.pack(fill=tkinter.BOTH)
-
-        def drawString():
-            cmd = PaintCommand(str(textBoxSize.get()), penColor.get(), "Times 18 italic")
-            cmd.draw(canvas, theTurtle)
-            # self.graphicsCommands.append(cmd)
-
-            # screen.update()
-            # screen.listen()
         
-        paintButton = tkinter.Button(sideBar, text = "Draw Text", command=drawString)
-        paintButton.pack(fill=tkinter.BOTH)
-
         # The color mode 255 below allows colors to be specified in RGB form (i.e. Red/
         # Green/Blue). The mode allows the Red value to be set by a two digit hexadecimal
         # number ranging from 00-FF. The same applies for Blue and Green values. The 
