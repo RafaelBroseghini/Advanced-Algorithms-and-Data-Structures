@@ -56,24 +56,37 @@ class StarCommand:
     def draw(self, turtle):
         turtle.width(self.width)
         turtle.pencolor(self.color)
-        for turn in range(10):
+        for turn in range(8):
             turtle.left(45)  
             turtle.forward(self.scale*20)
             turtle.left(90)
-        
-        resetPos = GoToCommand(0,0,self.width, self.color)
+
         penUp = PenUpCommand()
         penDown = PenDownCommand()
 
         penUp.draw(turtle)
-        resetPos.draw(turtle)
         penDown.draw(turtle)
 
     def __str__(self):
         return '<Command scale="'+ str(self.scale) + \
         '" width="'+ str(self.width) + '" color="' + self.color + '">Star</Command>'
 
-        
+
+class PaintCommand:
+    def __init__(self, text, fill="black", font="Times"):
+        self.text = text
+        self.fill = fill
+        self.font = font
+
+    def draw(self, canvas, turtle):
+        x, y = turtle.pos()
+        print(x, y)
+        canvas.create_text(x,y,text=self.text, fill=self.fill, font=self.font)
+    
+    def __str__(self):
+        pass
+
+
 class BeginFillCommand:
     def __init__(self,color):
         self.color = color
@@ -313,8 +326,8 @@ class DrawingApplication(tkinter.Frame):
         # Otherwise, a RawTurtle and a Turtle are exactly the same.
         theTurtle = turtle.RawTurtle(canvas)
         
-        # This makes the shape of the turtle a turtle. 
-        theTurtle.shape("turtle")
+        # This makes the shape of the turtle a circle. 
+        theTurtle.shape("circle")
         screen = theTurtle.getscreen()
         
         # This causes the application to not update the screen unless 
@@ -351,7 +364,14 @@ class DrawingApplication(tkinter.Frame):
         radiusEntry = tkinter.Entry(sideBar,textvariable=radiusSize)
         radiusSize.set(str(10))
         radiusEntry.pack()
-        
+
+        textBox = tkinter.Label(sideBar, text="Text Box")
+        textBox.pack()
+        textBoxSize = tkinter.StringVar()
+        textBoxEntry = tkinter.Entry(sideBar, textvariable=textBoxSize)
+        textBoxSize.set("John Doe")
+        textBoxEntry.pack()
+
         # A button widget calls an event handler when it is pressed. The circleHandler
         # function below is the event handler when the Draw Circle button is pressed. 
         def circleHandler():
@@ -383,6 +403,17 @@ class DrawingApplication(tkinter.Frame):
         
         starButton = tkinter.Button(sideBar, text = "Draw a Star", command=starHandler)
         starButton.pack(fill=tkinter.BOTH)
+
+        def drawString():
+            cmd = PaintCommand(str(textBoxSize.get()), penColor.get(), "Times 18 italic")
+            cmd.draw(canvas, theTurtle)
+            # self.graphicsCommands.append(cmd)
+
+            # screen.update()
+            # screen.listen()
+        
+        paintButton = tkinter.Button(sideBar, text = "Draw Text", command=drawString)
+        paintButton.pack(fill=tkinter.BOTH)
 
         # The color mode 255 below allows colors to be specified in RGB form (i.e. Red/
         # Green/Blue). The mode allows the Red value to be set by a two digit hexadecimal
