@@ -8,7 +8,7 @@ Date: 08/27/2018
 #1
 """
 A Python list behaves like a bunch of post office boxes
-as each index in the list has an unique address.
+as each index in the list has an unique address like a post office.
 """
 #2
 """
@@ -51,7 +51,7 @@ by subtistuting n with 1. The second step is the inductive hypothesis to be sati
 #7
 """
 This algorithm would run in a O(n^2) fashion. Even though the number of operations decreases by 2
-each time through the loop the dominant term in the final equation would be n^2, and drop the non
+each time through the loop the dominant term in the final equation would be n^2 (n^2/4 + n/2), and dropping the non
 dominant terms would result in a O(n^2) time complexity.
 """
 
