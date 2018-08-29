@@ -13,7 +13,7 @@ perform 20 multiplications on integers of same size and time it.
 def main():
     
     # Write an XML file with the results
-    file = open("ListAccessTiming.xml","w")
+    file = open("MultiplicationTiming.xml","w")
     
     file.write('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n')
     
@@ -32,17 +32,6 @@ def main():
         xList.append(num)
         num *= 10
         
-        # prod = 0
-        
-        # Creates a list of size x with all 0's
-        # lst = [0] * x
-        
-        # let any garbage collection/memory allocation complete or at least
-        # settle down
-        # time.sleep(1)
-        
-        # Time before the 1000 test retrievals
-        
     for v in range(100):
         # Iterate over the list in ascending order
         # and perform 100 multiplications for each
@@ -59,14 +48,15 @@ def main():
             prod = val * val
 
         endtime = datetime.datetime.now()
-        # Time after the 1000 test retrievals  
+        # Time after the 100 test multiplications  
     
         # The difference in time between start and end.
         deltaT = endtime - starttime
     
-        # Divide by 1000 for the average access time
+        # Divide by 100 for the average multiplication time
         # But also multiply by 1000000 for microseconds.
-        accessTime = deltaT.total_seconds() * 1000
+        accessTime = (deltaT.total_seconds() / 100) * 1000
+        print(accessTime)
     
         yList.append(accessTime)
      
@@ -76,7 +66,7 @@ def main():
     # NOTE
     # Discuss microseconds and seconds metric.
 
-    file.write('    <YAxis min="'+str(min(yList))+'" max="'+str(1)+'">Seconds</YAxis>\n')
+    file.write('    <YAxis min="'+str(min(yList))+'" max="'+str(0.005)+'">Seconds</YAxis>\n')
     file.write('  </Axes>\n')
     
     file.write('  <Sequence title="Multiplication Time vs Integer Size" color="red">\n')   
