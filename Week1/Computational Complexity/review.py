@@ -8,7 +8,7 @@ Date: 08/27/2018
 #1
 """
 A Python list behaves like a bunch of post office boxes
-as each index in the list has an unique address like a post office.
+as each index in the list has an unique address like a post office and can hold/store value to it.
 """
 #2
 """
@@ -31,14 +31,14 @@ print(end-start,"seconds.")
 """
 In terms of algorithmic complexity an algorithm with a quadratic order of growth
 is better than a exponential order of growth algorithm. For small input sizes these
-algorithms may perform similarly but as input size grows the exponential algorithm would
+algorithms may perform similarly but as input size grows larger the exponential algorithm would
 take much longer to finish.
 """
 
 #5
 """
 An O(n^2) algorithm means that its order of growth is quadratic. In other words, as the input size
-grows, runtime increases in a quadratic manner. If for 10 elements the algorithm takes 10 seconds, the
+grows, runtime increases in a quadratic manner. If for 10 elements input size the algorithm takes 10 seconds, the
 same algorithm with 20 elements as input size would take 100 seconds to finish.
 """
 
@@ -73,20 +73,21 @@ only one input size.
 """
 The built in append operation of a Python list is more efficient than the []+[] operation because
 it does not require to realocate extra memory for a new copy of the original list and to copy every element from the
-original list to the newly created list plus one element.
+original list to the newly created list plus one element. Freeing memory and performing less nested loops 
+are often good tradeoffs we should be aware of as these may increase significantly our algorithm's efficiency.
 The only drawback with the append method is the amortized case of resizing the list, that may seem like a O(n) amortized case.
 Although as we will learn this amortized computational complexity is of O(1) order of growth. Not so bad.
 """
 
 #10
 """
-I can think of many two different searching algorithms: sequential search and binary search.
+I can think of two different searching algorithms: sequential search and binary search.
 
-Although it is important to be aware of the constraints. For example, a sequential search on a
+Although it is important to be aware of potential constraints. For example, a sequential search on a
 ordered list is a different algorithm than a sequential search on an unordered list.
 
-A binary search algorithm must search on a sorted list as it is a O(log n) when speaking of asymptotic
-notation.
+A binary search algorithm must search on a sorted list since binary search cannot traverse an unordered list.
+Binary search is also very efficient as it is a O(log n) when speaking of asymptotic notation.
 
 I will further describe a sequential search on a sorted list of only integers.
 
