@@ -229,7 +229,7 @@ class DrawingApplication(tkinter.Frame):
                     cmd = CircleCommand(radius,width,color)
                 
                 elif command == "Star":
-                    scale = (attr["scale"].value)
+                    scale = float(attr["scale"].value)
                     width = float(attr["width"].value)
                     color = attr["color"].value.strip()
                     cmd = StarCommand(scale,width,color)

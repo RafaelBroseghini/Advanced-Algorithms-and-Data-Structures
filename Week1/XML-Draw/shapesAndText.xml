@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<GraphicsCommands>
+    <Command x="-284.0" y="283.0" width="1.0" color="#000000">GoTo</Command>
+    <Command x="-180.0" y="277.0" width="1.0" color="#000000">GoTo</Command>
+    <Command x="-56.0" y="265.0" width="1.0" color="#000000">GoTo</Command>
+    <Command x="2.0" y="-3.0" width="1.0" color="#000000">GoTo</Command>
+    <Command size="26" font="Courier" fill="#000000" text="John Doe">Paint</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command x="177.0" y="-151.0" width="1.0" color="#000000">GoTo</Command>
+    <Command radius="10.0" width="1.0" color="#000000">Circle</Command>
+    <Command x="-138.0" y="-193.0" width="1.0" color="#000000">GoTo</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command size="26" font="Courier" fill="#000000" text="John Doe">Paint</Command>
+    <Command x="214.0" y="187.0" width="1.0" color="#000000">GoTo</Command>
+    <Command size="22" font="Helvetica" fill="#000000" text="John Doe">Paint</Command>
+    <Command x="214.0" y="-18.0" width="1.0" color="#000000">GoTo</Command>
+    <Command scale="10.0" width="1.0" color="#000000">Star</Command>
+    <Command radius="10.0" width="1.0" color="#000000">Circle</Command>
+</GraphicsCommands>
