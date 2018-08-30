@@ -73,20 +73,23 @@ class StarCommand:
 
 
 class PaintCommand:
-    def __init__(self, text, fill="black", font="Times"):
+    def __init__(self, text, fill="black", font="Times", size="16"):
         self.text = text
         self.fill = fill
         self.font = font
+        self.size = size
 
     def draw(self, canvas, turtle):
         x, y = turtle.pos()
         print(x, y)
         # The y coordinate was providing an unexpected behavior
         # of being inverted (positive instead of negative sign)
-        canvas.create_text(x,-y,text=self.text, fill=self.fill, font=self.font)
+        fullFont = self.font + " " + self.size
+        canvas.create_text(x,-y,text=self.text, fill=self.fill, font=fullFont)
     
     def __str__(self):
-        pass
+        return '<Command size="'+ str(self.size) +'" font="' + str(self.font) + \
+        '" fill="' + str(self.fill) + '" text="' + str(self.text) + '">Paint</Command>'
 
 
 class BeginFillCommand:
@@ -226,10 +229,17 @@ class DrawingApplication(tkinter.Frame):
                     cmd = CircleCommand(radius,width,color)
                 
                 elif command == "Star":
-                    scale = float(attr["scale"].value)
+                    scale = (attr["scale"].value)
                     width = float(attr["width"].value)
                     color = attr["color"].value.strip()
                     cmd = StarCommand(scale,width,color)
+                
+                elif command == "Paint":
+                    size = attr["size"].value
+                    font = attr["font"].value.strip()
+                    fill = attr["fill"].value.strip()
+                    text = attr["text"].value.strip()
+                    cmd = PaintCommand(text, fill, font, size)
 
                 elif command == "BeginFill":
                     color = attr["color"].value.strip()
@@ -248,7 +258,9 @@ class DrawingApplication(tkinter.Frame):
         
                 self.graphicsCommands.append(cmd)
 
-        def loadFile():
+        canvas = tkinter.Canvas(self,width=600,height=600)
+
+        def loadFile(defaultCanvas=canvas):
 
             filename = tkinter.filedialog.askopenfilename(title="Select a Graphics File")
             
@@ -261,7 +273,10 @@ class DrawingApplication(tkinter.Frame):
             parse(filename)
                
             for cmd in self.graphicsCommands:
-                cmd.draw(theTurtle)
+                if isinstance(cmd, PaintCommand):
+                    cmd.draw(defaultCanvas, theTurtle)
+                else:
+                    cmd.draw(theTurtle)
                 
             # This line is necessary to update the window after the picture is drawn.
             screen.update()
@@ -321,7 +336,7 @@ class DrawingApplication(tkinter.Frame):
         
         # Here several widgets are created. The canvas is the drawing area on 
         # the left side of the window. 
-        canvas = tkinter.Canvas(self,width=600,height=600)
+        # canvas = tkinter.Canvas(self,width=600,height=600)
         canvas.pack(side=tkinter.LEFT)
         
         # By creating a RawTurtle, we can have the turtle draw on this canvas. 
@@ -392,8 +407,9 @@ class DrawingApplication(tkinter.Frame):
         # This method calls the paintcommand object to draw the text from the text box on the 
         # canvas. It takes the text, color pen, font size and font as class members.
         def drawString():
-            cmd = PaintCommand(str(textBoxSize.get()), penColor.get(), str(fontBoxSize.get() + " " + pointBoxSize.get()))
+            cmd = PaintCommand(str(textBoxSize.get()), penColor.get(), str(fontBoxSize.get()), str(pointBoxSize.get()))
             cmd.draw(canvas, theTurtle)
+            self.graphicsCommands.append(cmd)
 
         paintButton = tkinter.Button(sideBar, text = "Draw Text", command=drawString)
         paintButton.pack(fill=tkinter.BOTH)
