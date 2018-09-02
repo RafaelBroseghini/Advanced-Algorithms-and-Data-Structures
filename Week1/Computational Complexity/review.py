@@ -30,7 +30,7 @@ print(end-start,"seconds.")
 #4
 """
 In terms of algorithmic complexity an algorithm with a quadratic order of growth
-is better than a exponential order of growth algorithm. For small input sizes these
+is better than a exponential (2^n) order of growth algorithm. For small input sizes these
 algorithms may perform similarly but as input size grows larger the exponential algorithm would
 take much longer to finish.
 """
