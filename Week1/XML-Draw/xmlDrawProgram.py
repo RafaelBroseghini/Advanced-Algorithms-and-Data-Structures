@@ -258,7 +258,7 @@ class DrawingApplication(tkinter.Frame):
         
                 self.graphicsCommands.append(cmd)
 
-        canvas = tkinter.Canvas(self,width=600,height=600)
+        canvas = tkinter.Canvas(self,width=700,height=700)
 
         def loadFile(defaultCanvas=canvas):
 
@@ -393,7 +393,7 @@ class DrawingApplication(tkinter.Frame):
         fontBox.pack()
         fontBoxSize = tkinter.StringVar(sideBar)
         fontBoxSize.set("Times")
-        fontBoxEntry = tkinter.OptionMenu(sideBar, fontBoxSize, "Arial", "Courier", "Helvetica", "Times")
+        fontBoxEntry = tkinter.OptionMenu(sideBar, fontBoxSize, "Courier", "Helvetica", "Times", "Verdana")
         fontBoxEntry.pack(fill=tkinter.BOTH)
 
         SIZES = ["16", "18", "20","22", "24", "26", "28", "30"]
