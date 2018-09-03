@@ -80,13 +80,7 @@ class PaintCommand:
         self.size = size
 
     def draw(self, turtle):
-        # x, y = turtle.pos()
         turtle.write(self.text, align="left", font=(self.font, self.size))
-        # The y coordinate was providing an unexpected behavior
-        # of being inverted (positive instead of negative sign)
-        # fullFont = self.font + " " + self.size
-        # Use the write method of the turtle.
-        # canvas.create_text(x,-y,text=self.text, fill=self.fill, font=fullFont)
     
     def __str__(self):
         return '<Command size="'+ str(self.size) +'" font="' + str(self.font) + \
