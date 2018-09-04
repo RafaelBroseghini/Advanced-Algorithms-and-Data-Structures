@@ -7,7 +7,7 @@ Date: 08/25/2018
 
 def main():
     #7
-    hashTable = {}
+    hashTable = dict()
     hashTable["Kent"]  = "Denise"
     hashTable["Steve"] = "Lindy"
 
