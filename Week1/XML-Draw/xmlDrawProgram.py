@@ -387,7 +387,7 @@ class DrawingApplication(tkinter.Frame):
         fontBoxEntry.pack(fill=tkinter.BOTH)
 
         SIZES = ["16", "18", "20","22", "24", "26", "28", "30"]
-        pointBox = tkinter.Label(sideBar, text="Choose a point")
+        pointBox = tkinter.Label(sideBar, text="Choose a font size")
         pointBox.pack()
         pointBoxSize = tkinter.StringVar(sideBar)
         pointBoxSize.set("16")
