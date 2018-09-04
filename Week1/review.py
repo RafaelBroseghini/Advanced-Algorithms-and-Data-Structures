@@ -23,8 +23,9 @@ def main():
 
     #10
     # The loop and a half problem relates to trying to read records from a file when
-    # these may cross multiple lines. To perform a certain action we must try to read 
-    # a little bit of the record and perform a step by step approach accordingly.
+    # these may cross multiple lines. The key here is that each line is 
+    # part of a set of steps. To perform a certain action we must try to read 
+    # a little bit of the record and perform a step by step approach accordingly. 
     # Reading a record allows the algorithm to know how many more lines to check and so forth.
     # The program stops execution once we reach an empty line/EOF.
 
@@ -41,7 +42,9 @@ def main():
     # Polymorphism refers to the ability to implement the same method differently on different
     # objects. Each method will depend on how it is implemented within each specific object.
     # These methods are often not built in to the Python language and only defined by the
-    # programmer.
+    # programmer. Python is a dynamically typed language, so we can call any method and if 
+    # it is defined at run-time, the interpreter understands which object it encapsulates the method
+    # and calls it accordingly.
 
     # Operator Overloading lets you redefine the meaning of an operator respective to your class.
     # For example a developer may choose to give a new implementation to the __add__, __eq__, __iter__ 
