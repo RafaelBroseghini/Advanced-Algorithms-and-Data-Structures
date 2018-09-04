@@ -1,0 +1,14 @@
+Date: 09/03/2018
+Author: Rafael Broseghini
+
+Magic methods - 
+    Often referred to operator overloading in languages like C++
+
+if __name__ == "__main__":
+    main()
+
+    When this is imported to another program it does not run main.
+
+When a function is not a method of the class, meaning it does not take self, we must write
+Object.function. We often include it inside the object because it goes along with the algorithm and we
+do not provide it to outside users.

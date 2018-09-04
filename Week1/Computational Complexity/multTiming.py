@@ -5,7 +5,7 @@ import time
 
 """
 Steps:
-build list with integers from one to 100.
+build list with integers increasing by order of 10.
 
 perform 20 multiplications on integers of same size and time it.
 """
@@ -27,12 +27,13 @@ def main():
     xList = []
     yList = []
     
-    for x in range(100):
+
+    for x in range(10):
 
         xList.append(num)
         num *= 10
         
-    for v in range(100):
+    for v in range(10):
         # Iterate over the list in ascending order
         # and perform 100 multiplications for each
         # integer size.
@@ -56,23 +57,21 @@ def main():
         # Divide by 100 for the average multiplication time
         # But also multiply by 1000000 for microseconds.
         accessTime = (deltaT.total_seconds() / 100) * 1000
-        print(accessTime)
     
         yList.append(accessTime)
      
     file.write('  <Axes>\n')
-    file.write('    <XAxis min="'+str(1)+'" max="'+str(100)+'">Integer Size</XAxis>\n')
+    file.write('    <XAxis min="'+str(5)+'" max="'+str(max(xList))+'">Integer Size</XAxis>\n')
     
     # NOTE
     # Discuss microseconds and seconds metric.
-
-    file.write('    <YAxis min="'+str(min(yList))+'" max="'+str(0.005)+'">Seconds</YAxis>\n')
+    file.write('    <YAxis min="'+str(min(yList))+'" max="'+str(0.0009)+'">Miliseconds</YAxis>\n')
     file.write('  </Axes>\n')
     
     file.write('  <Sequence title="Multiplication Time vs Integer Size" color="red">\n')   
     
     for i in range(len(xList)):   
-        file.write('    <DataPoint x="'+str(len(str(xList[i])))+'" y="'+str(yList[i])+'"/>\n')    
+        file.write('    <DataPoint x="'+str(xList[i])+'" y="'+str(yList[i])+'"/>\n')    
         
     file.write('  </Sequence>\n')
     file.write('</Plot>\n')
