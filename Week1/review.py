@@ -7,7 +7,7 @@ Date: 08/25/2018
 
 def main():
     #7
-    hashTable = {}
+    hashTable = dict()
     hashTable["Kent"]  = "Denise"
     hashTable["Steve"] = "Lindy"
 
@@ -43,10 +43,10 @@ def main():
     # These methods are often not built in to the Python language and only defined by the
     # programmer.
 
-    # Operator Overloading refers to the ability to implement a new way for a method that
-    # may have been previously implemented in the Python language for a certain object. 
+    # Operator Overloading lets you redefine the meaning of an operator respective to your class.
     # For example a developer may choose to give a new implementation to the __add__, __eq__, __iter__ 
-    # methods that may be slightly different than previous implementations and suit their program in a desired way.
+    # methods (previously defined in the Python language) that may be slightly different than previous 
+    # implementations and suit their program in a desired way.
 
     #13
     # Are the numbers only positive?
