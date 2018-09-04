@@ -326,7 +326,7 @@ class DrawingApplication(tkinter.Frame):
         
         # Here several widgets are created. The canvas is the drawing area on 
         # the left side of the window. 
-        canvas = tkinter.Canvas(self,width=1000,height=1000)
+        canvas = tkinter.Canvas(self,width=800,height=800)
         canvas.pack(side=tkinter.LEFT)
         
         # By creating a RawTurtle, we can have the turtle draw on this canvas. 
@@ -393,6 +393,9 @@ class DrawingApplication(tkinter.Frame):
         pointBoxSize.set("16")
         pointBoxEntry = tkinter.OptionMenu(sideBar, pointBoxSize, *SIZES)
         pointBoxEntry.pack(fill=tkinter.BOTH)
+
+        shapeBox = tkinter.Label(sideBar, text="Draw a Shape")
+        shapeBox.pack()
 
         # This method calls the paintcommand object to draw the text from the text box on the 
         # canvas. It takes the text, color pen, font size and font as class members.
