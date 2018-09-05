@@ -1,6 +1,6 @@
 """
 Author: Rafael Broseghini
-Prof: Dr. Lee
+Prof: Dr. Kent Lee
 
 Date: 08/27/2018
 """
@@ -60,13 +60,10 @@ dominant terms would result in a O(n^2) time complexity.
 It is hard to state the algorithmic complexity of both algorithms if we only know
 it's number of steps for one input size n.
 
-I can be the case where they have the same time complexity of O(1) although algorithm B
-takes more steps. But these steps could be addition, multiplication etc. If the input size
-grows both algorithms could still perform 10 and 100 steps at each element, proving their O(1)
-algorithimic complexity.
-
-It can also be the case that algo A is O(n) and algo B is O(n^2) but it is difficult to conclude with
-only one input size.
+It can be the case where they have the same time complexity of O(n), O(n^2) or even O(1) despite algorithm 'B'
+taking more steps. These steps could be addition, multiplication, nested loops etc. It is difficult to conclude with
+only one input size. I would be able to better evaluate their asympotic notations if other runtimes given the respective
+input sizes were provided.
 """
 
 #9

@@ -19,7 +19,7 @@ def main():
 
     #9
     # The method __lshift__ is called when comparing objects through the << operator.
-    # This is a bitwise operation that return a shifted left by b.
+    # This is a bitwise operation that returns 'a' shifted left by 'b' amount.
 
     #10
     # The loop and a half problem relates to trying to read records from a file when
