@@ -21,19 +21,18 @@ def main():
     
     # Start with integer of size one. 
     num = 5
-    
-    # # Record the list sizes in xList and the average access time within
-    # # a list that size in yList for 1000 retrievals. 
+     
     xList = []
     yList = []
     
 
-    for x in range(10):
+    for x in range(100):
 
         xList.append(num)
         num *= 10
+    
         
-    for v in range(10):
+    for v in range(100):
         # Iterate over the list in ascending order
         # and perform 100 multiplications for each
         # integer size.
@@ -43,9 +42,9 @@ def main():
         starttime = datetime.datetime.now()
 
         #  Performing 100 multiplications on each integer size.
-        #  Better benchmark as multiplications are done really 
+        #  Better benchmark, as multiplications are done really 
         # fast in a computer.
-        for m in range(100):
+        for m in range(1000):
             prod = val * val
 
         endtime = datetime.datetime.now()
@@ -59,19 +58,21 @@ def main():
         accessTime = (deltaT.total_seconds() / 100) * 1000
     
         yList.append(accessTime)
+
+    print(yList)
      
     file.write('  <Axes>\n')
-    file.write('    <XAxis min="'+str(5)+'" max="'+str(max(xList))+'">Integer Size</XAxis>\n')
+    file.write('    <XAxis min="'+str(1)+'" max="'+str(len(str(xList[-1])))+'">Integer Size</XAxis>\n')
     
     # NOTE
     # Discuss microseconds and seconds metric.
-    file.write('    <YAxis min="'+str(min(yList))+'" max="'+str(0.0009)+'">Miliseconds</YAxis>\n')
+    file.write('    <YAxis min="'+str(min(yList))+'" max="'+str(0.009)+'">Miliseconds</YAxis>\n')
     file.write('  </Axes>\n')
     
     file.write('  <Sequence title="Multiplication Time vs Integer Size" color="red">\n')   
     
     for i in range(len(xList)):   
-        file.write('    <DataPoint x="'+str(xList[i])+'" y="'+str(yList[i])+'"/>\n')    
+        file.write('    <DataPoint x="'+ str(len(str(xList[i])))+'" y="'+str(yList[i])+'"/>\n')    
         
     file.write('  </Sequence>\n')
     file.write('</Plot>\n')

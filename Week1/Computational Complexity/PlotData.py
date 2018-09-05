@@ -58,6 +58,7 @@ class PlotApplication(tkinter.Frame):
             
             xSize = maxX - minX
             ySize = maxY - minY
+            
             xCenter = xSize / 2.0 + minX
             yCenter = ySize / 2.0 + minY
             
