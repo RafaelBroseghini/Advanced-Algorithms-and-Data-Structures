@@ -1,0 +1,24 @@
+Date: 09/07/2018
+----------------
+
+Homework question: Solving Sudoku.
+
+Steps:
+split line
+go through values when you see an x, it represents an unknown.
+
+(Build matrix) - Each cell is pointing to a set with all values if it is x.
+
+(Build groups) - rows;columns;squares. 27 groups; the first nine can be the rows.
+
+(Squares) - for i in range(0,9, 3) (upper left corner)
+                for j in range(0, 9, 3)
+                group = []
+                # this is where we get the nine value for a group.
+                for k in range(i, i+3)
+                    for m in range(j, j+3)
+                group.append(matrix[i][j])
+
+Reduce - go through the group; go back and count the number of sets that have a number exactly once in it.
+
+
