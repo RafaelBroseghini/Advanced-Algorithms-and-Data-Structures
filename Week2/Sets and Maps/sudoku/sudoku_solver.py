@@ -37,7 +37,7 @@ def form_puzzle(matrix):
 
 def getGroups(matrix):
     # Adding rows to groups. Here we make a new object (list) 
-    # via the list method that takes an iterator and makes a new object.
+    # via the list method that takes an iterator and returns a new object.
     groups = list(matrix)
 
     rows = len(groups)
