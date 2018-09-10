@@ -21,4 +21,19 @@ go through values when you see an x, it represents an unknown.
 
 Reduce - go through the group; go back and count the number of sets that have a number exactly once in it.
 
+======================================================================================================
+
+Date: 09/10/2018
+
+TEST QUESTION FRIDAY:
+    - Check Katie.
+
+Complexity of Merge Sort?
+    - Why merge sort is a big O(n log n)?
+         - 13 2 11 5 9 1 7 4 3 12 8 10 9 14 16 15
+         - Base case is 1. Call merge sort on the two halves.
+         - Two variables, one at the start of each array. And just compares the numbers, 
+           merging the list together.
+         - the log n part is the divide and conquer. The N part of the algorithm is merging the last
+         list.
 
