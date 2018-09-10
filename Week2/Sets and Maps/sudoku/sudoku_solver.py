@@ -32,6 +32,8 @@ def form_puzzle(matrix):
         for col in range(cols):
             if matrix[row][col] == "x":
                 matrix[row][col] = set([1,2,3,4,5,6,7,8,9])
+            else:
+                matrix[row][col] = set([matrix[row][col]])
 
     return matrix
 
@@ -66,14 +68,21 @@ def getGroups(matrix):
     return groups
 
 def reduceGroups(groups):
-    pass
+    # Rule 1: set cardinality and number of dups.
+    for grp in groups:
+        for g in grp:
+            pass
+    # Rule 2: set difference. Make a new copy of the item we are currently at.
 
-def reduce_groups(matrix):
+
+
+def reduce(matrix):
     changed = True
     groups = getGroups(matrix)
 
     while changed:
         changed = reduceGroups(groups)
+        return False
 
    
 def main():
@@ -81,7 +90,7 @@ def main():
     y = form_puzzle(x)
     z = getGroups(y)
 
-    print(len(z))
-    # print(z)
+    print(z)
+    # reduce(y)
 if __name__ == '__main__':
     main()
