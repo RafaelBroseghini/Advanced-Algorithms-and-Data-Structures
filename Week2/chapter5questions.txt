@@ -19,7 +19,8 @@ If it is, we return True. If not, we keep increasing the location hashed by one.
 If we reach a ‘None’ value, the item we are looking for is not in the hash table.
 
 
-4. Collision strategies are needed when working with a hash table because different keys may hash to the same value, and we still want to provide a way to store them in the hash table. 
+4. Collision strategies are needed when working with a hash table because different keys may hash to the same value, 
+and we still want to provide a way to store them in the hash table. 
 For example the key 12 and key 22 may hash to the same value in a table of size 10. 
 For that, we use collision strategies to find a new location in the hash table for the key.
 
@@ -47,15 +48,14 @@ collisions are likely to happen when adding new items and so forth. This operati
 
 8. Rehashing is a technique used when the load factor of a table gets too big and it is likely for collisions to occur. 
 Rehashing refers to transferring items into a new table of bigger size (double the size for example). 
-This is accomplished by hashing the values in the previous table again since the new table is of a bigger size, 
-and the newly hashed values may differ from before.
+This is accomplished by hashing the values in the original table again to a likely new location in the bigger table.
+Rehashing decreases the load factor in the newly created bigger table.
 
 
 9. Memoization is an effective programming technique when dealing with functions that get called more than once with the same arguments. 
 That is usually done through the use of a hash table that allows us to store information of the parameter passed to the function and its return value. 
-As the recursive call moves toward the base case, memoization saves computational time of calling the same function over and over again increasing the
-run-time stack, and instead looks up the value in the hash table. Since hash tables look up are O(1) time complexity, 
-this is an extremely useful programming technique.
+As the recursive call moves toward the base case, memoization saves computational time of increasing the
+run-time stack by calling the same function over and over again, and instead looks up the value in the hash table. Since hash tables look up are O(1) time complexity, this is an extremely useful programming technique.
 
 
 10. False. Memoization would not make the factorial function itself run faster, but it would make subsequent calls to the function run faster. See code below: 
