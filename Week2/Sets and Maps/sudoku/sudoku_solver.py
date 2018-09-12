@@ -3,7 +3,15 @@
 """
 Python script for solving sudoku using sets.
 
-The sudoku matrix must be 9x9.
+The algorithm below only solves sudoku puzzles
+of 9x9 'cells'.
+
+Steps:
+    - Read puzzle from file.
+    - Populate empty cells with values from {1...9}
+    - Get rows, columns and squares as individual groups.
+    - Iterate over groups applying rules 1 and 2. (described below)
+    - Write solved puzzle to a file.
 """
 
 __author__ = "Rafael Broseghini"
@@ -11,7 +19,7 @@ __author__ = "Rafael Broseghini"
 
 def create_puzzle(filename):
     matrix = []
-    with open(filename) as infile:
+    with open("sudoku_puzzles/{}".format(filename), "r+") as infile:
         for line in infile:
             row = []
             line = line.split()
@@ -69,44 +77,63 @@ def getGroups(matrix):
 
 def reduceGroups(groups):
     # Rule 1: set cardinality and number of dups.
-    for gp in groups:
-        for g in gp:
-            current = g
-            count = 0
-            for g in gp:
-                if g == current:
-                    count += 1
+    for group in groups:
+        for current_cell in group:
+            dups = 0
+            for other_cell in group:
+                if other_cell == current_cell:
+                    dups += 1
 
-            if (count == len(current)) and (count < 9):
-                for g in gp:
-                    if g != current:
-                        g.difference_update(current)
+            if (dups == len(current_cell)) and (dups < 9):
+                for other_cell in group:
+                    if other_cell != current_cell and current_cell <= other_cell:
+                        other_cell.difference_update(current_cell)
+                        return True
     
-    # Rule 2: set difference. Make a new copy of the item we are currently at.
-    for gp in groups:
-        for g in gp:
-            set_copy = set(g)
+    # Rule 2: set difference when . Make a new copy of the item we are currently at.
+    for group in groups:
+        for i in range(0, len(group)):
+            set_copy = set(group[i])
+            current_index = i
+            for j in range(0, len(group)):
+                if j != current_index:
+                    set_copy.difference_update(group[j])
 
-            for g in gp:
-                pass
+            if len(set_copy) == 1 and set_copy != group[i]:
+                group[i].clear()
+                group[i].update(set_copy)
+                return True
+                
+    return False
 
 
-def reduce(matrix):
+def _reduce(matrix):
     changed = True
     groups = getGroups(matrix)
 
     while changed:
         changed = reduceGroups(groups)
-        # return False
-    return matrix
-   
-def main():
-    x = create_puzzle("sudoku1.txt")
-    y = form_puzzle(x)
-    z = getGroups(y)
 
-    print(z)
-    print()
-    print(reduce(y))
+    return matrix
+
+def save_to_file(groups, filename):
+    with open("sudoku_solved_puzzles/{}".format(filename),"w+") as outfile:
+        for group in groups:
+            for cell in group:
+                cell = str(cell)
+                outfile.write("{} ".format(cell[1]))
+            outfile.write("\n")
+
+def main():
+    # Change the range if you have more than 6 sudoku files.
+    for i in range(1,7):
+        infile = "sudoku"+str(i)+".txt"
+        outfile = "sudoku"+str(i)+"_solved.txt"
+
+        original_puzzle = create_puzzle(infile)
+        populated_set_puzzle = form_puzzle(original_puzzle)
+        solved_puzzle = _reduce(populated_set_puzzle)
+
+        save_to_file(solved_puzzle, outfile)
 if __name__ == '__main__':
     main()
