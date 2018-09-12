@@ -69,11 +69,26 @@ def getGroups(matrix):
 
 def reduceGroups(groups):
     # Rule 1: set cardinality and number of dups.
-    for grp in groups:
-        for g in grp:
-            pass
-    # Rule 2: set difference. Make a new copy of the item we are currently at.
+    for gp in groups:
+        for g in gp:
+            current = g
+            count = 0
+            for g in gp:
+                if g == current:
+                    count += 1
 
+            if (count == len(current)) and (count < 9):
+                for g in gp:
+                    if g != current:
+                        g.difference_update(current)
+    
+    # Rule 2: set difference. Make a new copy of the item we are currently at.
+    for gp in groups:
+        for g in gp:
+            set_copy = set(g)
+
+            for g in gp:
+                pass
 
 
 def reduce(matrix):
@@ -82,8 +97,8 @@ def reduce(matrix):
 
     while changed:
         changed = reduceGroups(groups)
-        return False
-
+        # return False
+    return matrix
    
 def main():
     x = create_puzzle("sudoku1.txt")
@@ -91,6 +106,7 @@ def main():
     z = getGroups(y)
 
     print(z)
-    # reduce(y)
+    print()
+    print(reduce(y))
 if __name__ == '__main__':
     main()
