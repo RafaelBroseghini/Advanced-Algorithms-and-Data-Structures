@@ -21,6 +21,12 @@ go through values when you see an x, it represents an unknown.
 
 Reduce - go through the group; go back and count the number of sets that have a number exactly once in it.
 
+
+RULES:
+    - iterate over the group checking if set is equal to other sets. If cardinality of that set is
+    equal the amounts of set with repeated values we take it out.
+    USE difference_update.
+
 ======================================================================================================
 
 Date: 09/10/2018
@@ -37,3 +43,10 @@ Complexity of Merge Sort?
          - the log n part is the divide and conquer. The N part of the algorithm is merging the last
          list.
 
+When doing quadratic probing we have to make sure that the size of table is not a power of 2
+because it would lead into more primary clustering.
+
+3 requirements:
+    - __eq__
+    - __hash__
+    - the keys or values are immutable. They cant change once you put them in a set.
