@@ -116,6 +116,13 @@ def _reduce(matrix):
 
     return matrix
 
+def print_to_console(matrix):
+    for group in matrix:
+        for cell in group:
+            cell = str(cell)
+            print(("{} ".format(cell[1])), end="")
+        print()
+
 def save_to_file(groups, filename):
     with open("sudoku_solved_puzzles/{}".format(filename),"w+") as outfile:
         for group in groups:
@@ -126,14 +133,18 @@ def save_to_file(groups, filename):
 
 def main():
     # Change the range if you have more than 6 sudoku files.
-    for i in range(1,7):
-        infile = "sudoku"+str(i)+".txt"
-        outfile = "sudoku"+str(i)+"_solved.txt"
+    # for i in range(1,7):
+    # infile = "sudoku"+str(i)+".txt"
+    # outfile = "sudoku"+str(i)+"_solved.txt"
 
-        original_puzzle = create_puzzle(infile)
-        populated_set_puzzle = form_puzzle(original_puzzle)
-        solved_puzzle = _reduce(populated_set_puzzle)
+    infile = input("Which sudoku puzzle would you like to solve? ")
 
-        save_to_file(solved_puzzle, outfile)
+    original_puzzle = create_puzzle(infile)
+    populated_set_puzzle = form_puzzle(original_puzzle)
+    solved_puzzle = _reduce(populated_set_puzzle)
+
+    print_to_console(solved_puzzle)
+
+    # save_to_file(solved_puzzle, outfile)
 if __name__ == '__main__':
     main()
