@@ -169,7 +169,9 @@ class HashSet:
         return True
     
     def union(self, other):
-        pass
+        new_content = self.items + other.items
+        new_set = HashSet(new_content)
+        return new_set
     
     def intersection(self, other):
         pass
@@ -372,7 +374,19 @@ def main():
         print("Test 17 Passed")
     else:
         print("Test 17 Failed")    
-   
+    
+    x = HashSet(list(range(1,26)))
+
+    y = HashSet(list(range(26,51)))
+
+    z = HashSet(list(range(1,51)))
+
+    u = x.union(y)
+
+    if u == z:
+        print("Test 18 Passed")
+    else:
+        print("Test 18 Failed") 
     
 if __name__ == "__main__":
     main()
