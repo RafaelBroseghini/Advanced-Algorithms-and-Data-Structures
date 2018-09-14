@@ -16,6 +16,7 @@ Steps:
 
 __author__ = "Rafael Broseghini"
 
+from hashset import HashSet
 
 def create_puzzle(filename):
     matrix = []
@@ -39,9 +40,9 @@ def form_puzzle(matrix):
     for row in range(rows):
         for col in range(cols):
             if matrix[row][col] == "x":
-                matrix[row][col] = set([1,2,3,4,5,6,7,8,9])
+                matrix[row][col] = HashSet([1,2,3,4,5,6,7,8,9])
             else:
-                matrix[row][col] = set([matrix[row][col]])
+                matrix[row][col] = HashSet([matrix[row][col]])
 
     return matrix
 
@@ -76,7 +77,7 @@ def getGroups(matrix):
     return groups
 
 def reduceGroups(groups):
-    # Rule 1: set cardinality and number of dups.
+    # Rule 1: HashSet cardinality and number of dups.
     for group in groups:
         for current_cell in group:
             dups = 0
@@ -90,10 +91,10 @@ def reduceGroups(groups):
                         other_cell.difference_update(current_cell)
                         return True
     
-    # Rule 2: set difference when . Make a new copy of the item we are currently at.
+    # Rule 2: HashSet difference when. Make a new copy of the item we are currently at.
     for group in groups:
         for i in range(0, len(group)):
-            set_copy = set(group[i])
+            set_copy = HashSet(group[i])
             current_index = i
             for j in range(0, len(group)):
                 if j != current_index:
@@ -119,25 +120,30 @@ def _reduce(matrix):
 def print_to_console(matrix):
     for group in matrix:
         for cell in group:
-            cell = str(cell)
-            print(("{} ".format(cell[1])), end="")
+            cell = str(" ".join([str(x) for x in cell.items if isinstance(x, int)]))
+            print(("{} ".format(cell[0])), end="")
         print()
 
 def save_to_file(groups, filename):
     with open("sudoku_solved_puzzles/{}".format(filename),"w+") as outfile:
         for group in groups:
             for cell in group:
-                cell = str(cell)
-                outfile.write("{} ".format(cell[1]))
+                cell = str(" ".join([str(x) for x in cell.items if isinstance(x, int)]))
+                outfile.write("{} ".format(cell[0]))
             outfile.write("\n")
 
 def main():
     # Change the range if you have more than 6 sudoku files.
     # for i in range(1,7):
-    # infile = "sudoku"+str(i)+".txt"
-    # outfile = "sudoku"+str(i)+"_solved.txt"
+    #     infile = "sudoku"+str(i)+".txt"
+    #     outfile = "sudoku"+str(i)+"_solved.txt"
 
-    infile = input("Which sudoku puzzle would you like to solve? ")
+    print("Which sudoku puzzle would you like to solve? ")
+    print("\n============")
+    for i in range(1,7):
+        print("\033[1;32msudoku{}.txt\033[0m".format(str(i)))
+    print("============\n")
+    infile = input("Your choice: ")
 
     original_puzzle = create_puzzle(infile)
     populated_set_puzzle = form_puzzle(original_puzzle)
