@@ -21,6 +21,7 @@ from hashset import HashSet
 
 def create_puzzle(filename):
     matrix = []
+    # Change this to where your puzzles are located the file system.
     with open("sudoku_puzzles/{}".format(filename), "r+") as infile:
         for line in infile:
             row = []
@@ -140,10 +141,10 @@ def main():
     #     outfile = "sudoku"+str(i)+"_solved.txt"
 
     print("Which sudoku puzzle would you like to solve? ")
-    print("\n===========")
+    print("\n+ =========== +")
     for i in range(1,7):
-        print("\033[1;32msudoku{}.txt\033[0m".format(str(i)))
-    print("===========\n")
+        print("+ \033[1;32msudoku{}.txt\033[0m +".format(str(i)))
+    print("+ =========== +\n")
     infile = input("Your choice: ")
 
     original_puzzle = create_puzzle(infile)
