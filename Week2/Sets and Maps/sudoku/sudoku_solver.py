@@ -11,6 +11,7 @@ Steps:
     - Populate empty cells with values from {1...9}
     - Get rows, columns and squares as individual groups.
     - Iterate over groups applying rules 1 and 2. (described below)
+    - Print puzzle to console.
     - Write solved puzzle to a file.
 """
 
@@ -139,10 +140,10 @@ def main():
     #     outfile = "sudoku"+str(i)+"_solved.txt"
 
     print("Which sudoku puzzle would you like to solve? ")
-    print("\n============")
+    print("\n===========")
     for i in range(1,7):
         print("\033[1;32msudoku{}.txt\033[0m".format(str(i)))
-    print("============\n")
+    print("===========\n")
     infile = input("Your choice: ")
 
     original_puzzle = create_puzzle(infile)
