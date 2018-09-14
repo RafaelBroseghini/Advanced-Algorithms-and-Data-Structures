@@ -157,14 +157,14 @@ class HashSet:
     
     
     def issubset(self, other):
-        for item in self.items:
-            if item != None and type(item) != HashSet.__Placeholder and item not in other:
+        for item in self:
+            if item not in other:
                 return False
         return True
             
     def issuperset(self, other):
         for item in other:
-            if item != None and type(item) != HashSet.__Placeholder and item not in other:
+            if item not in self:
                 return False
         return True
     
@@ -178,8 +178,8 @@ class HashSet:
     #done
     def difference(self, other):
         new_set = HashSet()
-        for item in self.items:
-            if item != None and type(item) != HashSet.__Placeholder and item not in other:
+        for item in self:
+            if item not in other:
                 new_set.add(item)
         return new_set
     

@@ -93,7 +93,7 @@ def reduceGroups(groups):
                         other_cell.difference_update(current_cell)
                         return True
     
-    # Rule 2: HashSet difference when. Make a new copy of the item we are currently at.
+    # Rule 2: HashSet difference when size = 1. Make a new copy of the item we are currently at.
     for group in groups:
         for i in range(0, len(group)):
             set_copy = HashSet(group[i])
@@ -122,7 +122,7 @@ def _reduce(matrix):
 def print_to_console(matrix):
     for group in matrix:
         for cell in group:
-            cell = str(" ".join([str(x) for x in cell.items if isinstance(x, int)]))
+            cell = list(cell)
             print(("{} ".format(cell[0])), end="")
         print()
 
