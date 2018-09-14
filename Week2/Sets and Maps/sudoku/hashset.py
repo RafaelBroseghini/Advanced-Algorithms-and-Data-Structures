@@ -72,7 +72,6 @@ class HashSet:
           
     def __str__(self):
         result = "{"
-        # print("{", end="")
         for i in range(len(self.items)):
             if self.items[i] != None and type(self.items[i]) != HashSet.__Placeholder:
                 result += str(self.items[i])
@@ -136,15 +135,14 @@ class HashSet:
         return self.numItems
     
     def __contains__(self, item):
-        if type(item) != HashSet.__Placeholder:
-            idx = hash(item) % len(self.items)
-            while self.items[idx] != None:
-                if self.items[idx] == item:
-                    return True
-                
-                idx = (idx + 1) % len(self.items)
-                
-            return False
+        idx = hash(item) % len(self.items)
+        while self.items[idx] != None:
+            if self.items[idx] == item:
+                return True
+            
+            idx = (idx + 1) % len(self.items)
+            
+        return False
     
     # One extra method for use with the HashMap class. This method is not needed in the 
     # HashSet implementation, but it is used by the HashMap implementation. 
@@ -160,13 +158,13 @@ class HashSet:
     
     def issubset(self, other):
         for item in self.items:
-            if item not in other and item != None and type(item) != HashSet.__Placeholder:
+            if item != None and type(item) != HashSet.__Placeholder and item not in other:
                 return False
         return True
             
     def issuperset(self, other):
         for item in other:
-            if item not in self.items and item != None and type(item) != HashSet.__Placeholder:
+            if item != None and type(item) != HashSet.__Placeholder and item not in other:
                 return False
         return True
     
@@ -179,7 +177,7 @@ class HashSet:
     def difference(self, other):
         new_set = HashSet()
         for item in self.items:
-            if item not in other and item != None and type(item) != HashSet.__Placeholder:
+            if item != None and type(item) != HashSet.__Placeholder and item not in other:
                 new_set.add(item)
         return new_set
     
