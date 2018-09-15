@@ -71,12 +71,11 @@ class HashSet:
             self.add(item)
           
     def __str__(self):
-        result = "{"
-        for i in range(len(self.items)):
-            if self.items[i] != None and type(self.items[i]) != HashSet.__Placeholder:
-                result += str(self.items[i])
-        result += "}"
-        return result
+        content = []
+        for item in self:
+            content.append(item)
+        content = "{" + ",".join(map(str,content)) + "}"
+        return content
     
     def __iter__(self):
         for i in range(len(self.items)):
