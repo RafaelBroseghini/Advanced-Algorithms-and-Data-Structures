@@ -11,6 +11,7 @@ Steps:
     - Populate empty cells with values from {1...9}
     - Get rows, columns and squares as individual groups.
     - Iterate over groups applying rules 1 and 2. (described below)
+        - Implement own HashSet data structure.
     - Print puzzle to console.
     - Write solved puzzle to a file.
 """
@@ -130,7 +131,7 @@ def save_to_file(groups, filename):
     with open("sudoku_solved_puzzles/{}".format(filename),"w+") as outfile:
         for group in groups:
             for cell in group:
-                cell = str(" ".join([str(x) for x in cell.items if isinstance(x, int)]))
+                cell = list(cell)
                 outfile.write("{} ".format(cell[0]))
             outfile.write("\n")
 
