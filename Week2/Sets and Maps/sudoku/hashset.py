@@ -175,10 +175,8 @@ class HashSet:
         pass
     #done
     def difference(self, other):
-        new_set = HashSet()
-        for item in self:
-            if item not in other:
-                new_set.add(item)
+        new_set = HashSet(self)
+        new_set.difference_update(other)
         return new_set
     
     def symmetric_difference(self, other):
