@@ -111,14 +111,13 @@ class HashSet:
     def clear(self):
         self.items = [None] * 10
         self.numItems = 0
-        # return self.items
         
     def update(self, other):
         for item in other:
             self.add(item)
             
     def intersection_update(self, other):
-        for item in self.items:
+        for item in self:
             if item not in other:
                 self.discard(item)
             
