@@ -1,0 +1,28 @@
+Date: 09/17/2018.txt
+====================
+
+Deleting from Tree:
+    - Similarities with insert.
+    - Just like insert in OST. __delete
+    - Return the tree after deleting the value.
+    - less, right and equal control structures.
+
+
+    4 cases:
+        - No children. 
+            - Make it none.
+
+        - At least one children.
+            - parent becomes parent of the children of target.
+
+        - Two children.
+            - get right most on left subtree.(return the value not the node)
+            - get left most on right subtree.(return the value not the node)
+                - delete the value.
+
+    - In order traversal non recursively:
+        - We need a stack of nodes. (references to the nodes in the tree)
+        - line 66-69 erase
+        - push all left nodes to the stack
+        - have a while loop that tries to empty
+            - pop top, print it, look in the right subtree and do a push left, root node included.
