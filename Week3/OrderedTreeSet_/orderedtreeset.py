@@ -26,6 +26,11 @@ class OrderedTreeSet:
                 
             def setRight(self,newright):
                 self.right = newright
+            
+            def getLeftMost(self, node):
+                if node.getLeft() == None:
+                    return node
+                return self.getLeftMost(node.getLeft())
                 
             # This method deserves a little explanation. It does an inorder traversal
             # of the nodes of the tree yielding all the values. In this way, we get
@@ -61,30 +66,35 @@ class OrderedTreeSet:
                 root.setRight(OrderedTreeSet.BinarySearchTree.__insert(root.getRight(),val))
                 
             return root
-        
+   
         def delete(self, val):
             self.root = OrderedTreeSet.BinarySearchTree.__delete(self.root, val)
 
         def __delete(root, val):
-            if root is None:
+            if root == None:
                 raise Exception("Value not found.")
 
             if val < root.getVal():
                 root.setLeft(OrderedTreeSet.BinarySearchTree.__delete(root.getLeft(),val))
             elif val > root.getVal():
                 root.setRight(OrderedTreeSet.BinarySearchTree.__delete(root.getRight(),val))
+
+
             elif val == root.getVal():
-                if root.getLeft() is None:
+                if root.getLeft() == None:
                     return root.getRight()
-                    # print(root.val, root.right)
-                    # root.setRight(OrderedTreeSet.BinarySearchTree.__delete(root.getRight(),val))
-                elif root.getRight() is None:
-                    return root.getLeft()
-                    # root.setLeft(OrderedTreeSet.BinarySearchTree.__delete(root.getLeft(),val))
-                
+                elif root.getRight() == None:
+                    return root.getLeft()    
                 elif root.getLeft() and root.getRight():
-                    print("both children.")
-                    pass
+                    replacement = root.getLeftMost(root.getRight())
+                    rep_val = replacement.getVal()
+                    root_val = root.getVal()
+                    replacement.setVal(root_val)
+                    root.setVal(rep_val)
+                    
+                    # root.OrderedTreeSet.BinarySearchTree.__delete(root,temp.getVal())
+
+
             
             return root
 

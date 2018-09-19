@@ -3,32 +3,46 @@ import orderedtreeset
 def main():
     s = orderedtreeset.OrderedTreeSet(list(range(100)))
     
-    t = orderedtreeset.OrderedTreeSet(list(range(10,20)))
-    # t = orderedtreeset.OrderedTreeSet()
+    # t = orderedtreeset.OrderedTreeSet(list(range(10,20)))
+    t = orderedtreeset.OrderedTreeSet()
     
     u = orderedtreeset.OrderedTreeSet(list(range(10,20)))
 
-    # t.add(10)
-    # t.add(8)
-    # t.add(12)
-    # t.add(7)
-    # t.add(9)
-    # t.add(13)
+    t.add(20)
+    
+    t.add(10)
+    t.add(30)
+    t.add(5)
+    t.add(15)
+    t.add(25)
+    t.add(40)
+
+    tree = t.BinarySearchTree()
+    # print(t.tree.getRightMost(t.tree.root))
 
     # for item in t:
     #     print(item)
 
-    # t.remove(22)
-    # print(t.tree.root.val)
-    # print(t.tree.root.right.val)
-    # print(t.tree.root.right.right.val)
+    # # t.remove(22)
+    # # print(t.tree.root.val)
+    # # print(t.tree.root.right.val)
+    # # print(t.tree.root.right.right.val)
     # t.remove(12)
-    # print(t.tree.root.val)
-    # print(t.tree.root.right.val)
-    # print(t.tree.root.right.right.val)
+    t.remove(20)
+    # print("after removal")
+    # # print(t.tree.root.val)
+    # # print(t.tree.root.right.val)
 
-    # for item in t:
-    #     print(item)
+    for item in t:
+        print(item)
+
+    # print(t.tree.root)
+
+
+
+
+
+
     
     # if len(t) == len(u) and len(t) == 10:
     #     print("Test 1 Passed")
