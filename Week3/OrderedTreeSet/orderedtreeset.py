@@ -26,25 +26,20 @@ class OrderedTreeSet:
                 
             def setRight(self,newright):
                 self.right = newright
-            
-            # def getLeftMost(self, node):
-            #     if node.getLeft() == None:
-            #         return node
-            #     return self.getLeftMost(node.getLeft())
                 
             # This method deserves a little explanation. It does an inorder traversal
             # of the nodes of the tree yielding all the values. In this way, we get
             # the values in ascending order.
-            def __iter__(self):
-                if self.left != None:
-                    for elem in self.left:
-                        yield elem
+            # def __iter__(self):
+            #     if self.left != None:
+            #         for elem in self.left:
+            #             yield elem
                         
-                yield self.val
+            #     yield self.val
                 
-                if self.right != None:
-                    for elem in self.right:
-                        yield elem
+            #     if self.right != None:
+            #         for elem in self.right:
+            #             yield elem
 
             def __repr__(self):
                 return "BinarySearchTree.Node(" + repr(self.val) + "," + repr(self.left) + "," + repr(self.right) + ")"            
@@ -98,10 +93,23 @@ class OrderedTreeSet:
 
             
         def __iter__(self):
-            if self.root != None:
-                return iter(self.root)
-            else:
-                return iter([])
+            nodeStack = []
+            root = self.root
+
+            while root.getLeft() != None:
+                nodeStack.append(root)
+                root = root.getLeft()
+            nodeStack.append(root)
+
+            while len(nodeStack) > 0:
+                top = nodeStack.pop()
+                yield top.getVal()
+                rightSub = top.getRight()
+                if rightSub != None:
+                    nodeStack.append(rightSub)
+                    while rightSub.getLeft() != None:
+                        rightSub = rightSub.getLeft()
+                        nodeStack.append(rightSub)
 
         def __str__(self):
             return "BinarySearchTree(" + repr(self.root) + ")"

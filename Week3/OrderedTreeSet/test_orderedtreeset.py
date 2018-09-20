@@ -4,7 +4,7 @@ def main():
     s = orderedtreeset.OrderedTreeSet(list(range(100)))
     
     t = orderedtreeset.OrderedTreeSet(list(range(10,20)))
-    
+
     u = orderedtreeset.OrderedTreeSet(list(range(10,20)))
 
     if len(t) == len(u) and len(t) == 10:
@@ -171,25 +171,8 @@ def main():
     if len(z) == 25:
         print("Test 19 Passed")
     else:
-        print("Test 19 Failed")
+        print("Test 19 Failed")   
 
-    p = orderedtreeset.OrderedTreeSet()
-    p.add(50)      
-    p.add(45)      
-    # p.add(40)      
-    p.add(60)      
-    # p.add(70)      
-    # p.add(55)      
-    # p.add(43)      
-    # p.add(12)      
-    # p.add(88)      
-    # p.add(49) 
-
-    # print(p.discard(45))
-
-    # print(p.tree.root.val)     
-
-    
 if __name__ == "__main__":
     main()
     
