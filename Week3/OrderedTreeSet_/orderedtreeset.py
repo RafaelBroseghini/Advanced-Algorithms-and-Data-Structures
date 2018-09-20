@@ -72,13 +72,12 @@ class OrderedTreeSet:
 
         def __delete(root, val):
             if root == None:
-                raise Exception("Value not found.")
+                return None
 
             if val < root.getVal():
                 root.setLeft(OrderedTreeSet.BinarySearchTree.__delete(root.getLeft(),val))
             elif val > root.getVal():
                 root.setRight(OrderedTreeSet.BinarySearchTree.__delete(root.getRight(),val))
-
 
             elif val == root.getVal():
                 if root.getLeft() == None:
@@ -86,16 +85,23 @@ class OrderedTreeSet:
                 elif root.getRight() == None:
                     return root.getLeft()    
                 elif root.getLeft() and root.getRight():
-                    replacement = root.getLeftMost(root.getRight())
-                    rep_val = replacement.getVal()
-                    root_val = root.getVal()
-                    replacement.setVal(root_val)
-                    root.setVal(rep_val)
-                    
-                    # root.OrderedTreeSet.BinarySearchTree.__delete(root,temp.getVal())
+                    # print("Root:, ", root.getVal(), "left: ", root.getLeft().getVal(), "right: ", root.getRight().getVal())
+                    # print(root.getLeft())
 
+                    # print()
+                    # print(root.getRight())
+                    sub = root.getLeftMost(root.getRight())
+                    # print("the left most node is", sub.val)
 
-            
+                    # sub_val = sub.getVal()
+                    # root_val = root.getVal()
+
+                    # sub.setVal(root_val)
+                    # root.setVal(sub_val)
+
+                    root.setVal(sub.getVal())
+                    root.setRight(OrderedTreeSet.BinarySearchTree.__delete(root.getRight(), sub.getVal()))
+
             return root
 
             
@@ -130,27 +136,37 @@ class OrderedTreeSet:
     
     # Following are the mutator set methods 
     def add(self, item):
-        tree = self.BinarySearchTree()
         self.tree.insert(item)
+        self.numItems += 1
                 
     def remove(self, item):
-        tree = self.BinarySearchTree()
         self.tree.delete(item)
+        # raise KeyError("Value not found.")
+        self.numItems -= 1
         
     def discard(self, item):
-        pass
+        self.tree.delete(item)
+        self.numItems -= 1
         
     def pop(self):
         pass
             
     def clear(self):
-        pass
+        self.tree = OrderedTreeSet.BinarySearchTree()
+        self.numItems = 0
         
     def update(self, other):
-        pass
+        for item in other:
+            if item not in self:
+                self.add(item)
             
     def intersection_update(self, other):
-        pass
+        # Review.
+        contents = list(self)
+
+        for item in contents:
+            if item not in other:
+                self.discard(item)
             
     def difference_update(self, other):
         pass
@@ -160,10 +176,22 @@ class OrderedTreeSet:
                 
     # Following are the accessor methods for the HashSet  
     def __len__(self):
-        pass
+        return self.numItems
     
     def __contains__(self, item):
-        pass
+        root = self.tree.root
+
+        found = False
+        if root:
+            while not found and root != None:
+                if item == root.getVal():
+                    found = True
+                elif item > root.getVal():
+                    root = root.getRight()
+                elif item < root.getVal():
+                    root = root.getLeft()
+        return found
+            
     
     # One extra method for use with the HashMap class. This method is not needed in the 
     # HashSet implementation, but it is used by the HashMap implementation. 
@@ -178,11 +206,17 @@ class OrderedTreeSet:
     
     
     def issubset(self, other):
-        pass
+        for item in self:
+            if item not in other:
+                return False
+        return True
             
     
     def issuperset(self, other):
-        pass
+        for item in other:
+            if item not in self:
+                return False
+        return True
     
     def union(self, other):
         pass
@@ -191,13 +225,19 @@ class OrderedTreeSet:
         pass
     #done
     def difference(self, other):
-        pass
+        new_set = OrderedTreeSet()
+        
+        for item in self:
+            if item not in other:
+                new_set.add(item)
+        
+        return new_set
     
     def symmetric_difference(self, other):
         pass
     
     def copy(self):
-        pass
+        return self
     
     # Operator Definitions
     def __or__(self, other):
@@ -234,7 +274,7 @@ class OrderedTreeSet:
         pass
     
     def __eq__(self,other):
-        pass      
+        return self.issubset(other) and other.issubset(self)     
                 
             
     

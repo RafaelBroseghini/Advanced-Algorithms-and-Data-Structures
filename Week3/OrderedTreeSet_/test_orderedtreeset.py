@@ -3,212 +3,191 @@ import orderedtreeset
 def main():
     s = orderedtreeset.OrderedTreeSet(list(range(100)))
     
-    # t = orderedtreeset.OrderedTreeSet(list(range(10,20)))
-    t = orderedtreeset.OrderedTreeSet()
+    t = orderedtreeset.OrderedTreeSet(list(range(10,20)))
     
     u = orderedtreeset.OrderedTreeSet(list(range(10,20)))
 
-    t.add(20)
+    if len(t) == len(u) and len(t) == 10:
+        print("Test 1 Passed")
+    else:
+        print("Test 1 Failed")
     
-    t.add(10)
-    t.add(30)
-    t.add(5)
-    t.add(15)
-    t.add(25)
-    t.add(40)
+    s.intersection_update(t)
 
-    tree = t.BinarySearchTree()
-    # print(t.tree.getRightMost(t.tree.root))
-
-    # for item in t:
-    #     print(item)
-
-    # # t.remove(22)
-    # # print(t.tree.root.val)
-    # # print(t.tree.root.right.val)
-    # # print(t.tree.root.right.right.val)
-    # t.remove(12)
-    t.remove(20)
-    # print("after removal")
-    # # print(t.tree.root.val)
-    # # print(t.tree.root.right.val)
-
-    for item in t:
-        print(item)
-
-    # print(t.tree.root)
-
-
-
-
-
-
-    
-    # if len(t) == len(u) and len(t) == 10:
-    #     print("Test 1 Passed")
-    # else:
-    #     print("Test 1 Failed")
+    if len(s) == 10:
+        print("Test 2 Passed")
+    else:
+        print("Test 2 Failed")
         
-    # s.intersection_update(t)
+    s = orderedtreeset.OrderedTreeSet(list(range(100)))
     
-    # if len(s) == 10:
-    #     print("Test 2 Passed")
-    # else:
-    #     print("Test 2 Failed")
+    t.update(s)
+    
+    if len(s) == len(t):
+        print("Test 3 Passed")
+    else:
+        print("Test 3 Failed")
         
-    # s = orderedtreeset.OrderedTreeSet(list(range(100)))
+    t.clear()
+    t.update(u)
     
-    # t.update(s)
-    
-    # if len(s) == len(t):
-    #     print("Test 3 Passed")
-    # else:
-    #     print("Test 3 Failed")
+    if len(t) == len(u):
+        print("Test 4 Passed")
+    else:
+        print("Test 4 Failed")
         
-    # t.clear()
-    # t.update(u)
+    s.difference_update(t)
     
-    # if len(t) == len(u):
-    #     print("Test 4 Passed")
-    # else:
-    #     print("Test 4 Failed")
-        
-    # s.difference_update(t)
+    test5Passed = True
+    test6Passed = True
     
-    # test5Passed = True
-    # test6Passed = True
-    
-    # for x in range(1,10):
-    #     if x in s:
-    #         pass
-    #     else:
-    #         test5Passed = False
-    #         print("Test 5 Failed on",x)
+    for x in range(1,10):
+        if x in s:
+            pass
+        else:
+            test5Passed = False
+            print("Test 5 Failed on",x)
             
-    #     if x not in s:
-    #         test6Passed = False
-    #         print("Test 6 Failed on",x)
+        if x not in s:
+            test6Passed = False
+            print("Test 6 Failed on",x)
             
-    # if test5Passed:
-    #     print("Test 5 Passed")
+    if test5Passed:
+        print("Test 5 Passed")
     
-    # if test6Passed:
-    #     print("Test 6 Passed")
+    if test6Passed:
+        print("Test 6 Passed")
         
 
-    # test7Passed = True
-    # test8Passed = True
+    test7Passed = True
+    test8Passed = True
     
-    # for x in range(20,100):
-    #     if x in s:
-    #         pass
-    #     else:
-    #         test7Passed = False
-    #         print("Test 7 Failed on",x)
+    for x in range(20,100):
+        if x in s:
+            pass
+        else:
+            test7Passed = False
+            print("Test 7 Failed on",x)
             
-    #     if x not in s:
-    #         test8Passed = False
-    #         print("Test 8 Failed on",x)
+        if x not in s:
+            test8Passed = False
+            print("Test 8 Failed on",x)
             
-    # if test7Passed:
-    #     print("Test 7 Passed")
+    if test7Passed:
+        print("Test 7 Passed")
     
-    # if test8Passed:
-    #     print("Test 8 Passed")   
+    if test8Passed:
+        print("Test 8 Passed")   
         
-    # x = orderedtreeset.OrderedTreeSet(["a","b","c","d","e","f","g","h","i","j","k"])
+    x = orderedtreeset.OrderedTreeSet(["a","b","c","d","e","f","g","h","i","j","k"])
     
-    # y = orderedtreeset.OrderedTreeSet(["c","d","e","l","m","n"])
+    y = orderedtreeset.OrderedTreeSet(["c","d","e","l","m","n"])
     
-    # z = x.difference(y)
+    z = x.difference(y)
     
-    # if len(z) == 8:
-    #     print("Test 9 Passed")
-    # else:
-    #     print("Test 9 Failed")
+    if len(z) == 8:
+        print("Test 9 Passed")
+    else:
+        print("Test 9 Failed")
         
-    # test10Passed = True
+    test10Passed = True
     
-    # for item in z:
-    #     if item not in ["a","b","f","g","h","i","j","k"]:
-    #         test10Passed = False
-    #         print("Test 10 Failed on", x)
+    for item in z:
+        if item not in ["a","b","f","g","h","i","j","k"]:
+            test10Passed = False
+            print("Test 10 Failed on", x)
             
-    # if test10Passed:
-    #     print("Test 10 Passed")
+    if test10Passed:
+        print("Test 10 Passed")
         
-    # if z.issubset(x):
-    #     print("Test 11 Passed")
-    # else:
-    #     print("Test 11 Failed")
+    if z.issubset(x):
+        print("Test 11 Passed")
+    else:
+        print("Test 11 Failed")
         
-    # if x.issuperset(z):
-    #     print("Test 12 Passed")
-    # else:
-    #     print("Test 12 Failed")
+    if x.issuperset(z):
+        print("Test 12 Passed")
+    else:
+        print("Test 12 Failed")
         
-    # if z == y:
-    #     print("Test 13 Failed")
-    # else:
-    #     print("Test 13 Passed")
+    if z == y:
+        print("Test 13 Failed")
+    else:
+        print("Test 13 Passed")
         
-    # if z == z:
-    #     print("Test 14 Passed")
-    # else:
-    #     print("Test 14 Failed")
+    if z == z:
+        print("Test 14 Passed")
+    else:
+        print("Test 14 Failed")
         
-    # r = z.copy()
+    r = z.copy()
     
-    # if r == z:
-    #     print("Test 15 Passed")
-    # else:
-    #     print("Test 15 Failed")
+    if r == z:
+        print("Test 15 Passed")
+    else:
+        print("Test 15 Failed")
         
-    # z = orderedtreeset.OrderedTreeSet(list(range(50)))
+    z = orderedtreeset.OrderedTreeSet(list(range(50)))
         
-    # for item in range(50):
-    #     z.discard(item)
+    for item in range(50):
+        z.discard(item)
         
-    # if len(z) == 0:
-    #     print("Test 16 Passed")
-    # else:
-    #     print("Test 16 Failed")    
+    if len(z) == 0:
+        print("Test 16 Passed")
+    else:
+        print("Test 16 Failed")
         
-    # z = orderedtreeset.OrderedTreeSet(list(range(50)))
+    z = orderedtreeset.OrderedTreeSet(list(range(50)))
         
-    # lastItem = -99999999999999999999999999999
-    # test17Passed = True
+    lastItem = -99999999999999999999999999999
+    test17Passed = True
     
-    # for item in z:
-    #     if lastItem >= item:
-    #         print("Test 17 Failed with ", lastItem, "and", item, "out of order.")
-    #         test17Passed = False
+    for item in z:
+        if lastItem >= item:
+            print("Test 17 Failed with ", lastItem, "and", item, "out of order.")
+            test17Passed = False
             
-    #     lastItem = item
+        lastItem = item
             
-    # if test17Passed:
-    #     print("Test 17 Passed")  
+    if test17Passed:
+        print("Test 17 Passed")  
         
-    # for item in range(25):
-    #     z.remove(item)  
+    for item in range(25):
+        z.remove(item)  
     
-    # lastItem = -99999999999999999999999999999
-    # test18Passed = True
+    lastItem = -99999999999999999999999999999
+    test18Passed = True
     
-    # for item in z:
-    #     if lastItem >= item:
-    #         print("Test 18 Failed with ", lastItem, "and", item, "out of order.")
-    #         test18Passed = False
+    for item in z:
+        if lastItem >= item:
+            print("Test 18 Failed with ", lastItem, "and", item, "out of order.")
+            test18Passed = False
             
-    #     lastItem = item
+        lastItem = item
             
-    # if test18Passed:
-    #     print("Test 18 Passed") 
+    if test18Passed:
+        print("Test 18 Passed") 
         
-    # if len(z) == 25:
-    #     print("Test 19 Passed")
-    # else:
-    #     print("Test 19 Failed")       
+    if len(z) == 25:
+        print("Test 19 Passed")
+    else:
+        print("Test 19 Failed")
+
+    p = orderedtreeset.OrderedTreeSet()
+    p.add(50)      
+    p.add(45)      
+    # p.add(40)      
+    # p.add(60)      
+    # p.add(70)      
+    # p.add(55)      
+    # p.add(43)      
+    # p.add(12)      
+    # p.add(88)      
+    # p.add(49) 
+
+    print(p.discard(45))
+
+    print(p.tree.root.val)     
 
     
 if __name__ == "__main__":
