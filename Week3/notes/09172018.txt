@@ -10,14 +10,14 @@ Deleting from Tree:
 
     4 cases:
         - No children. 
-            - Make it none.
+            - Make it none. (done)
 
         - At least one children.
-            - parent becomes parent of the children of target.
+            - parent becomes parent of the children of target. (done)
 
         - Two children.
-            - get right most on left subtree.(return the value not the node)
-            - get left most on right subtree.(return the value not the node)
+            - get {{right most node}} on left subtree.(return the value not the node)
+            - get {{left most node}} on right subtree.(return the value not the node)
                 - delete the value.
 
     - In order traversal non recursively:

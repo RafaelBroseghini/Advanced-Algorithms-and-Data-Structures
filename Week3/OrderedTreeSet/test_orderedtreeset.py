@@ -177,7 +177,7 @@ def main():
     p.add(50)      
     p.add(45)      
     # p.add(40)      
-    # p.add(60)      
+    p.add(60)      
     # p.add(70)      
     # p.add(55)      
     # p.add(43)      
@@ -185,9 +185,9 @@ def main():
     # p.add(88)      
     # p.add(49) 
 
-    print(p.discard(45))
+    # print(p.discard(45))
 
-    print(p.tree.root.val)     
+    # print(p.tree.root.val)     
 
     
 if __name__ == "__main__":

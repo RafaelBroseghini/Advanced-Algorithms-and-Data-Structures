@@ -27,10 +27,10 @@ class OrderedTreeSet:
             def setRight(self,newright):
                 self.right = newright
             
-            def getLeftMost(self, node):
-                if node.getLeft() == None:
-                    return node
-                return self.getLeftMost(node.getLeft())
+            # def getLeftMost(self, node):
+            #     if node.getLeft() == None:
+            #         return node
+            #     return self.getLeftMost(node.getLeft())
                 
             # This method deserves a little explanation. It does an inorder traversal
             # of the nodes of the tree yielding all the values. In this way, we get
@@ -66,6 +66,11 @@ class OrderedTreeSet:
                 root.setRight(OrderedTreeSet.BinarySearchTree.__insert(root.getRight(),val))
                 
             return root
+        
+        def getLeftMost(node):
+            if node.getLeft() == None:
+                return node
+            return OrderedTreeSet.BinarySearchTree.getLeftMost(node.getLeft())
    
         def delete(self, val):
             self.root = OrderedTreeSet.BinarySearchTree.__delete(self.root, val)
@@ -85,20 +90,7 @@ class OrderedTreeSet:
                 elif root.getRight() == None:
                     return root.getLeft()    
                 elif root.getLeft() and root.getRight():
-                    # print("Root:, ", root.getVal(), "left: ", root.getLeft().getVal(), "right: ", root.getRight().getVal())
-                    # print(root.getLeft())
-
-                    # print()
-                    # print(root.getRight())
-                    sub = root.getLeftMost(root.getRight())
-                    # print("the left most node is", sub.val)
-
-                    # sub_val = sub.getVal()
-                    # root_val = root.getVal()
-
-                    # sub.setVal(root_val)
-                    # root.setVal(sub_val)
-
+                    sub = OrderedTreeSet.BinarySearchTree.getLeftMost(root.getRight())
                     root.setVal(sub.getVal())
                     root.setRight(OrderedTreeSet.BinarySearchTree.__delete(root.getRight(), sub.getVal()))
 
@@ -140,9 +132,11 @@ class OrderedTreeSet:
         self.numItems += 1
                 
     def remove(self, item):
-        self.tree.delete(item)
-        # raise KeyError("Value not found.")
-        self.numItems -= 1
+        if item in self:
+            self.tree.delete(item)
+            self.numItems -= 1
+            return
+        raise KeyError("Value not found.")
         
     def discard(self, item):
         self.tree.delete(item)
