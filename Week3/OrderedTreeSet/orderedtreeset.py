@@ -86,7 +86,9 @@ class OrderedTreeSet:
                     return root.getLeft()    
                 elif root.getLeft() and root.getRight():
                     sub = OrderedTreeSet.BinarySearchTree.getLeftMost(root.getRight())
+                    # Current node val = leftmost child's val
                     root.setVal(sub.getVal())
+                    # Delete left most child.
                     root.setRight(OrderedTreeSet.BinarySearchTree.__delete(root.getRight(), sub.getVal()))
 
             return root
@@ -95,12 +97,14 @@ class OrderedTreeSet:
         def __iter__(self):
             nodeStack = []
             root = self.root
-
+            
+            # Push all left most nodes into the tree.
             while root.getLeft() != None:
                 nodeStack.append(root)
                 root = root.getLeft()
             nodeStack.append(root)
 
+            # Depth first search on the current node.
             while len(nodeStack) > 0:
                 top = nodeStack.pop()
                 yield top.getVal()
@@ -130,7 +134,7 @@ class OrderedTreeSet:
             
     def __str__(self):
         pass
-    
+
     def __iter__(self):
         return iter(self.tree)
     
@@ -171,7 +175,10 @@ class OrderedTreeSet:
                 self.discard(item)
             
     def difference_update(self, other):
-        pass
+        # Update the set, removing elements found in others.
+        for item in self:
+            if item in other:
+                self.discard(item)
                 
     def symmetric_difference_update(self, other):
         pass
@@ -183,6 +190,7 @@ class OrderedTreeSet:
     def __contains__(self, item):
         root = self.tree.root
 
+        # Binary search O(log n)
         found = False
         if root:
             while not found and root != None:
@@ -227,11 +235,9 @@ class OrderedTreeSet:
         pass
     #done
     def difference(self, other):
-        new_set = OrderedTreeSet()
-        
-        for item in self:
-            if item not in other:
-                new_set.add(item)
+        contents = list(self)
+        new_set = OrderedTreeSet(contents)
+        new_set.difference_update(other)
         
         return new_set
     
