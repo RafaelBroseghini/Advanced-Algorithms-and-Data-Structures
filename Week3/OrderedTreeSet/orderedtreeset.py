@@ -176,7 +176,8 @@ class OrderedTreeSet:
             
     def difference_update(self, other):
         # Update the set, removing elements found in others.
-        for item in self:
+        contents = list(self)
+        for item in contents:
             if item in other:
                 self.discard(item)
                 

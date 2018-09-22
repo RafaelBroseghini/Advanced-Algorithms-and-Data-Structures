@@ -82,9 +82,9 @@ def main():
     x = orderedtreeset.OrderedTreeSet(["a","b","c","d","e","f","g","h","i","j","k"])
     
     y = orderedtreeset.OrderedTreeSet(["c","d","e","l","m","n"])
-    
+
     z = x.difference(y)
-    
+
     if len(z) == 8:
         print("Test 9 Passed")
     else:
