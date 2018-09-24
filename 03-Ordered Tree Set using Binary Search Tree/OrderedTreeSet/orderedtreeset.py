@@ -92,7 +92,7 @@ class OrderedTreeSet:
                     root.setRight(OrderedTreeSet.BinarySearchTree.__delete(root.getRight(), sub.getVal()))
 
             return root
-
+            
             
         def __iter__(self):
             nodeStack = []
@@ -187,7 +187,7 @@ class OrderedTreeSet:
     # Following are the accessor methods for the HashSet  
     def __len__(self):
         return self.numItems
-    
+
     def __contains__(self, item):
         root = self.tree.root
 
