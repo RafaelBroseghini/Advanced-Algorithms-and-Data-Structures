@@ -115,6 +115,19 @@ class OrderedTreeSet:
                         rightSub = rightSub.getLeft()
                         nodeStack.append(rightSub)
 
+        def __find(node, item):
+            if node == None:
+                return node
+            
+            if node.getVal() == item:
+                return True
+            elif node.getVal() > item:
+                return OrderedTreeSet.BinarySearchTree.__find(node.getLeft(), item)
+            return OrderedTreeSet.BinarySearchTree.__find(node.getRight(), item)
+
+        def __contains__(self, item):
+            return OrderedTreeSet.BinarySearchTree.__find(self.root, item)
+
         def __str__(self):
             return "BinarySearchTree(" + repr(self.root) + ")"
             
@@ -189,19 +202,22 @@ class OrderedTreeSet:
         return self.numItems
 
     def __contains__(self, item):
-        root = self.tree.root
+        if item in self.tree:
+            return True
+        return False
 
+        # OR
         # Binary search O(log n)
-        found = False
-        if root:
-            while not found and root != None:
-                if item == root.getVal():
-                    found = True
-                elif item > root.getVal():
-                    root = root.getRight()
-                elif item < root.getVal():
-                    root = root.getLeft()
-        return found
+        # found = False
+        # if root:
+        #     while not found and root != None:
+        #         if item == root.getVal():
+        #             found = True
+        #         elif item > root.getVal():
+        #             root = root.getRight()
+        #         elif item < root.getVal():
+        #             root = root.getLeft()
+        # return found
             
     
     # One extra method for use with the HashMap class. This method is not needed in the 
