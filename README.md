@@ -11,7 +11,7 @@ This repo is a collection of exercises/problems using implementation from scratc
 
 ## Notes:
 * Can we achieve O(1) time complexity for building; lookup; removal; insert; etc... (Data Structure utopia)?
-* Yes? We did it!
+* Yes? We have built the best DS!
 * No?
   * Choose a different Data Structure. :joy:
 
