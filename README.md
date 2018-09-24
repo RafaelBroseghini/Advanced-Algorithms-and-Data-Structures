@@ -7,6 +7,7 @@ This repo is a collection of exercises/problems using implementation from scratc
 * **HashSet.**
 * **HashMap.**
 * **Ordered Tree Set.**
+  * **Binary Search Tree.**
 
 ## Notes:
 * Can we achieve O(1) time complexity for building; lookup; removal; insert; etc... (Data Structure utopia)?
