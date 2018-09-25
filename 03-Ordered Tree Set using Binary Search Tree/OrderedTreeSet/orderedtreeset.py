@@ -262,7 +262,7 @@ class OrderedTreeSet:
         pass
     
     def copy(self):
-        return self
+        return OrderedTreeSet(list(self))
     
     # Operator Definitions
     def __or__(self, other):
