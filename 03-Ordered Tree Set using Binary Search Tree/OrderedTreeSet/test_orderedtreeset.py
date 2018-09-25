@@ -4,16 +4,16 @@ def main():
     s = orderedtreeset.OrderedTreeSet(list(range(100)))
     
     t = orderedtreeset.OrderedTreeSet(list(range(10,20)))
-
+    
     u = orderedtreeset.OrderedTreeSet(list(range(10,20)))
-
+    
     if len(t) == len(u) and len(t) == 10:
         print("Test 1 Passed")
     else:
         print("Test 1 Failed")
-    
+        
     s.intersection_update(t)
-
+    
     if len(s) == 10:
         print("Test 2 Passed")
     else:
@@ -82,9 +82,9 @@ def main():
     x = orderedtreeset.OrderedTreeSet(["a","b","c","d","e","f","g","h","i","j","k"])
     
     y = orderedtreeset.OrderedTreeSet(["c","d","e","l","m","n"])
-
+    
     z = x.difference(y)
-
+    
     if len(z) == 8:
         print("Test 9 Passed")
     else:
@@ -135,7 +135,7 @@ def main():
     if len(z) == 0:
         print("Test 16 Passed")
     else:
-        print("Test 16 Failed")
+        print("Test 16 Failed")    
         
     z = orderedtreeset.OrderedTreeSet(list(range(50)))
         
@@ -171,8 +171,9 @@ def main():
     if len(z) == 25:
         print("Test 19 Passed")
     else:
-        print("Test 19 Failed")   
+        print("Test 19 Failed")       
 
+    
 if __name__ == "__main__":
     main()
     
