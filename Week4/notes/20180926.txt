@@ -1,0 +1,41 @@
+Date: 09/26/2018
+================
+
+Greedy Algorithm: Always makes the best decision along the way.
+
+Graphs:
+    - Graph G = (V, E)
+        - Edges (E) E = {(vi,vj: vi,vj are elements of V)}
+        - Vertices (V) V = {v0, v1, v2, v3}
+    
+    - Weighted Graph
+        - Graph G = (V, E)
+        - There is a cost between Vertices.
+
+=====================================================================
+Kruskal's
+    - Minimun Weighted spanning tree.
+    - Tree is an acyclic like graph. (no cycles)
+
+As long as the tree is connected you have n-1 edges for n vertices.
+
+Go through the list of edges from min to max
+
+sets of vertices represent the spanning trees
+create these sets
+map vertex id to their sets
+
+if a vertex connects two vertex we merge their sets
+and point to a new sets
+
+what if we represent the sets as trees?
+    - combine trees if they are edges.
+
+if vertex is not at its index, we have to go to the referenced index.
+=====================================================================
+
+
+Average node depth is 3.2.....
+    - Trees are short and fat.
+
+
