@@ -59,6 +59,7 @@ def main():
     screen = t.getscreen()
     screen.setworldcoordinates(0,height,width,0)
     t.speed(1000)
+    t.pensize(3)
     t.ht()
 
     # mapping vertexIds to objects
@@ -112,15 +113,17 @@ def main():
 
         for e in adjacents:
             if e.v1 not in visited:
-                if distances[e.v1] > (distances[currentVertex.vertexId] + e.weight):
-                    distances[e.v1] = distances[currentVertex.vertexId] + e.weight
+                dist = distances[currentVertex.vertexId] + e.weight
+                if distances[e.v1] > dist:
+                    distances[e.v1] = dist
                     previous[e.v1] = currentVertex.vertexId
-                    unvisited.add(Pair(e.v1, distances[currentVertex.vertexId] + e.weight))
+                    unvisited.add(Pair(e.v1, dist))
             if e.v2 not in visited:
-                if distances[e.v2] > (distances[currentVertex.vertexId] + e.weight):
-                    distances[e.v2] = distances[currentVertex.vertexId] + e.weight
+                dist = distances[currentVertex.vertexId] + e.weight
+                if distances[e.v2] > dist:
+                    distances[e.v2] = dist
                     previous[e.v2] = currentVertex.vertexId
-                    unvisited.add(Pair(e.v2, distances[currentVertex.vertexId] + e.weight))
+                    unvisited.add(Pair(e.v2, dist))
 
 
     for i in range(len(visited)):
