@@ -2,6 +2,7 @@ import sys
 import turtle
 from xml.dom import minidom
 from orderedtreeset import OrderedTreeSet
+from hashset import HashSet
 
 class Vertex:
     def __init__(self,vertexId,x,y,label):
@@ -126,7 +127,7 @@ def main(start="0"):
     # Source pair (root of the OrderedTreeSet.BinaryTree)
     sourcePair = Pair(sourceId, 0)
     # Creating a visited and unvisited set.
-    visited = set()
+    visited = HashSet()
     unvisited = OrderedTreeSet([sourcePair])
     # Building list of edges.
     edgeList = []
