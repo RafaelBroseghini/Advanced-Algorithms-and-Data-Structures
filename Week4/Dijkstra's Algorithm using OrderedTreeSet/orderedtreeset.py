@@ -11,12 +11,6 @@ class OrderedTreeSet:
 
             def getVal(self):
                 return self.val
-
-            def getValCost(self):
-                return self.val.cost
-
-            def getValId(self):
-                return self.val.vertexId
             
             def setVal(self,newval):
                 self.val = newval
@@ -81,7 +75,7 @@ class OrderedTreeSet:
             if node == None:
                 return None
             if node.getLeft() == None:
-                return node
+                return node.val
             if node.getLeft():
                 return OrderedTreeSet.BinarySearchTree.__getSmallest(node.getLeft())
             

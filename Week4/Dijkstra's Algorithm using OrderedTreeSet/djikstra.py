@@ -40,6 +40,9 @@ class Pair(object):
         self.vertexId = vertexId
         self.cost = cost
     
+    def getVertexId(self):
+        return self.vertexId
+
     def __lt__(self, other):
         if type(self) != type(other):
             raise Exception("Unorderable types")
@@ -73,12 +76,12 @@ def djkistra(sourceId: int, vertices:list, vertexDict: dict, edgeList:list):
     previous[sourceId] = sourceId
 
     while len(unvisited) != 0:
-        current = unvisited.smallest()
-        unvisited.remove(current.getVal())
+        currentPair = unvisited.smallest()
+        unvisited.remove(currentPair)
 
-        visited.add(current.getValId())
+        visited.add(currentPair.getVertexId())
 
-        currentVertex = vertexDict[current.getValId()]
+        currentVertex = vertexDict[currentPair.getVertexId()]
         # grab adjacents.
         adjacents = currentVertex.getAdjacents(edgeList)
 
@@ -102,7 +105,7 @@ def djkistra(sourceId: int, vertices:list, vertexDict: dict, edgeList:list):
         print("  cost: {:.2f}".format(distances[labels[i]]))
         print("  previous:{}\n".format(previousLabelsDict[previous[labelsDict[i]]]))
 
-    return previous, labelsDict, distances
+    return previous, distances, labelsDict
 
 def main(start="0"):
     # start = input("What is the source node?: ")
@@ -143,7 +146,7 @@ def main(start="0"):
             anEdge.weight = float(edge.attributes["weight"].value) 
         edgeList.append(anEdge)
 
-    previous, labelsDict, distances = djkistra(sourceId, vertices, vertexDict, edgeList)
+    previous, distances, labelsDict = djkistra(sourceId, vertices, vertexDict, edgeList)
 
     for edge in edgeList:
         x1 = float(vertexDict[edge.v1].x)
