@@ -184,7 +184,7 @@ def main(start="0"):
             t.penup()
             t.goto(x1+40,y1-20)
             t.color("purple")
-            t.write("{:.2f}".format(distances[c]),align="right",font=("Arial",12,"bold"))
+            t.write("{:.2f}".format(distances[c]),align="center",font=("Arial",12,"bold"))
             t.color("red")
             t.goto(x1,y1)
             t.pendown()
@@ -196,4 +196,5 @@ def main(start="0"):
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         main(sys.argv[1])
-    main()
+    else:
+        main()
