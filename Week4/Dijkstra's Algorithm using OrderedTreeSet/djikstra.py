@@ -4,7 +4,7 @@ from xml.dom import minidom
 from orderedtreeset import OrderedTreeSet
 from hashset import HashSet
 
-class Vertex:
+class Vertex(object):
     def __init__(self,vertexId,x,y,label):
         self.vertexId = vertexId
         self.x = x
@@ -21,7 +21,7 @@ class Vertex:
                 self.adjacents.append(e)
         return self.adjacents
         
-class Edge:
+class Edge(object):
     def __init__(self,v1,v2,weight=0):
         self.v1 = v1
         self.v2 = v2
@@ -45,9 +45,19 @@ class Pair(object):
             raise Exception("Unorderable types")
         return self.cost < other.cost
 
+    def __gt__(self, other):
+        if type(self) != type(other):
+            raise Exception("Unorderable types")
+        return self.cost > other.cost
 
-def djkistra(sourceId: int, unvisited: OrderedTreeSet, visited: set, vertices:list, vertexDict: dict, edgeList:list):
-    # get adjacents of sourceId
+
+def djkistra(sourceId: int, vertices:list, vertexDict: dict, edgeList:list):
+    # Source pair (root of the OrderedTreeSet.BinaryTree)
+    sourcePair = Pair(sourceId, 0)
+    
+    # visited and unvisited sets.
+    visited = HashSet()
+    unvisited = OrderedTreeSet([sourcePair])
 
     # build mapping labels -> vertexId & vertexId -> labels
     labelsDict = {int(v.attributes["label"].value):int(v.attributes["vertexId"].value) for v in vertices}
@@ -63,7 +73,7 @@ def djkistra(sourceId: int, unvisited: OrderedTreeSet, visited: set, vertices:li
     previous[sourceId] = sourceId
 
     while len(unvisited) != 0:
-        current = unvisited.tree.getSmallest()
+        current = unvisited.smallest()
         unvisited.remove(current.getVal())
 
         visited.add(current.getValId())
@@ -124,11 +134,6 @@ def main(start="0"):
         v = Vertex(vertexId, x, y, label)
         vertexDict[vertexId] = v
 
-    # Source pair (root of the OrderedTreeSet.BinaryTree)
-    sourcePair = Pair(sourceId, 0)
-    # Creating a visited and unvisited set.
-    visited = HashSet()
-    unvisited = OrderedTreeSet([sourcePair])
     # Building list of edges.
     edgeList = []
     
@@ -138,7 +143,7 @@ def main(start="0"):
             anEdge.weight = float(edge.attributes["weight"].value) 
         edgeList.append(anEdge)
 
-    previous, labelsDict, distances = djkistra(sourceId, unvisited, visited, vertices, vertexDict, edgeList)
+    previous, labelsDict, distances = djkistra(sourceId, vertices, vertexDict, edgeList)
 
     for edge in edgeList:
         x1 = float(vertexDict[edge.v1].x)

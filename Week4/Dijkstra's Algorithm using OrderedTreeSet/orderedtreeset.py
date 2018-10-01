@@ -73,6 +73,10 @@ class OrderedTreeSet:
                 return node
             return OrderedTreeSet.BinarySearchTree.getLeftMost(node.getLeft())
         
+        def getSmallest(self):
+            rv = OrderedTreeSet.BinarySearchTree.__getSmallest(self.root)
+            return rv
+
         def __getSmallest(node):
             if node == None:
                 return None
@@ -81,11 +85,6 @@ class OrderedTreeSet:
             if node.getLeft():
                 return OrderedTreeSet.BinarySearchTree.__getSmallest(node.getLeft())
             
-
-        def getSmallest(self):
-            rv = OrderedTreeSet.BinarySearchTree.__getSmallest(self.root)
-            return rv
-
         def delete(self, val):
             self.root = OrderedTreeSet.BinarySearchTree.__delete(self.root, val)
 
@@ -143,7 +142,7 @@ class OrderedTreeSet:
             elif node.getVal() > item:
                 return OrderedTreeSet.BinarySearchTree.__find(node.getLeft(), item)
             return OrderedTreeSet.BinarySearchTree.__find(node.getRight(), item)
-
+            
         def __contains__(self, item):
             return OrderedTreeSet.BinarySearchTree.__find(self.root, item)
 
@@ -169,8 +168,13 @@ class OrderedTreeSet:
 
     def __iter__(self):
         return iter(self.tree)
+
+    def smallest(self):
+        rv = self.tree.getSmallest()
+        return rv
     
-    # Following are the mutator set methods 
+    # Following are the mutator set methods
+
     def add(self, item):
         self.tree.insert(item)
         self.numItems += 1
