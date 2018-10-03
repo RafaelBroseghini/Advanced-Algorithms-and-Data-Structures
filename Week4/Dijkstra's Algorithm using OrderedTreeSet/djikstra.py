@@ -11,7 +11,6 @@ class Vertex(object):
         self.y = y
         self.label = label
         self.adjacents = []
-        self.previous = None
 
     def getAdjacents(self, edgeList):
         for e in edgeList:
@@ -59,7 +58,8 @@ def djkistra(sourceId: int, vertices:list, vertexDict: dict, edgeList:list):
     sourcePair = Pair(sourceId, 0)
     
     # visited and unvisited sets.
-    visited = HashSet()
+    # visited = HashSet()
+    visited = set()
     unvisited = OrderedTreeSet([sourcePair])
 
     # build mapping labels -> vertexId & vertexId -> labels
