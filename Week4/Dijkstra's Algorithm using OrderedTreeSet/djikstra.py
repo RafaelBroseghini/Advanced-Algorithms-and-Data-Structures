@@ -55,7 +55,7 @@ class Pair(object):
 
 def djkistra(sourceId: int, vertices:list, vertexDict: dict, edgeList:list):
     # Source pair (root of the OrderedTreeSet.BinaryTree)
-    sourcePair = Pair(sourceId, 0)
+    sourcePair = Pair(sourceId)
     
     # visited and unvisited sets.
     # visited = HashSet()
