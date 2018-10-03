@@ -87,17 +87,12 @@ def djkistra(sourceId: int, vertices:list, vertexDict: dict, edgeList:list):
 
         for e in adjacents:
             dist = distances[currentVertex.vertexId] + e.weight
-            if e.v1 not in visited:
-                if distances[e.v1] > dist:
-                    distances[e.v1] = dist
-                    previous[e.v1] = currentVertex.vertexId
-                    unvisited.add(Pair(e.v1, dist))
-            if e.v2 not in visited:
-                if distances[e.v2] > dist:
-                    distances[e.v2] = dist
-                    previous[e.v2] = currentVertex.vertexId
-                    unvisited.add(Pair(e.v2, dist))
-
+            for vertex in [e.v1, e.v2]:
+                if vertex not in visited:
+                    if distances[vertex] > dist:
+                        distances[vertex] = dist
+                        previous[vertex] = currentVertex.vertexId
+                        unvisited.add(Pair(vertex, dist))
 
     for i in range(len(visited)):
         print("Vertex:")
