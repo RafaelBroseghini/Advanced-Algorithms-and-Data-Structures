@@ -11,6 +11,11 @@ class Vertex(object):
         self.y = y
         self.label = label
         self.adjacents = []
+        self.cost = sys.maxsize
+        self.previous = None
+
+    def getVertexId(self):
+        return self.vertexId
 
     def getAdjacents(self, edgeList):
         for e in edgeList:
@@ -19,6 +24,18 @@ class Vertex(object):
             elif e.v2 == int(self.vertexId):
                 self.adjacents.append(e)
         return self.adjacents
+
+    def getCost(self):
+        return self.cost
+
+    def setCost(self, nv):
+        self.cost = nv
+    
+    def getPrevious(self):
+        return self.previous
+
+    def setPrevious(self, nv):
+        self.previous = nv
         
 class Edge(object):
     def __init__(self,v1,v2,weight=0):
@@ -67,13 +84,9 @@ def djkistra(sourceId: int, vertices:list, vertexDict: dict, edgeList:list):
     labels = [labelsDict[i] for i in range(len(labelsDict))]
     previousLabelsDict = {v: k for k, v in labelsDict.items()}
 
-    # build list of distances from sourceId to other vertexIds
-    distances = [sys.maxsize for x in range(len(vertices))]
-    distances[sourceId] = 0
+    vertexDict[sourceId].setCost(0)
 
-    # building list of previous
-    previous = [-1 for x in range(len(vertices))]
-    previous[sourceId] = sourceId
+    vertexDict[sourceId].setPrevious(sourceId)
 
     while len(unvisited) != 0:
         currentPair = unvisited.smallest()
@@ -86,21 +99,21 @@ def djkistra(sourceId: int, vertices:list, vertexDict: dict, edgeList:list):
         adjacents = currentVertex.getAdjacents(edgeList)
 
         for e in adjacents:
-            dist = distances[currentVertex.vertexId] + e.weight
+            dist = vertexDict[currentVertex.vertexId].getCost() + e.weight
             for vertex in [e.v1, e.v2]:
                 if vertex not in visited:
-                    if distances[vertex] > dist:
-                        distances[vertex] = dist
-                        previous[vertex] = currentVertex.vertexId
+                    if vertexDict[vertex].getCost() > dist:
+                        vertexDict[vertex].setCost(dist)
+                        vertexDict[vertex].setPrevious(currentVertex.getVertexId())
                         unvisited.add(Pair(vertex, dist))
 
     for i in range(len(visited)):
         print("Vertex:")
         print("  label: {}".format(i))
-        print("  cost: {:.2f}".format(distances[labels[i]]))
-        print("  previous:{}\n".format(previousLabelsDict[previous[labelsDict[i]]]))
+        print("  cost: {:.2f}".format(vertexDict[labels[i]].getCost()))
+        print("  previous:{}\n".format(previousLabelsDict[vertexDict[labelsDict[i]].getPrevious()]))
 
-    return previous, distances, labelsDict
+    return labelsDict
 
 def main(start="0"):
     # start = input("What is the source node?: ")
@@ -141,7 +154,7 @@ def main(start="0"):
             anEdge.weight = float(edge.attributes["weight"].value) 
         edgeList.append(anEdge)
 
-    previous, distances, labelsDict = djkistra(sourceId, vertices, vertexDict, edgeList)
+    labelsDict = djkistra(sourceId, vertices, vertexDict, edgeList)
 
     for edge in edgeList:
         x1 = float(vertexDict[edge.v1].x)
@@ -181,13 +194,13 @@ def main(start="0"):
             c = int(current)
             x1 = float(vertexDict[c].x)
             y1 = float(vertexDict[c].y)
-            current = previous[current]
+            current = vertexDict[c].getPrevious()
             x2 = float(vertexDict[current].x)
             y2 = float(vertexDict[current].y)
             t.penup()
             t.goto(x1+40,y1-20)
             t.color("purple")
-            t.write("{:.2f}".format(distances[c]),align="center",font=("Arial",12,"bold"))
+            t.write("{:.2f}".format(vertexDict[c].getCost()),align="center",font=("Arial",12,"bold"))
             t.color("red")
             t.goto(x1,y1)
             t.pendown()
