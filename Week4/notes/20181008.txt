@@ -1,0 +1,32 @@
+Date: 10/08/2018
+================
+
+
+Blooming Filters:
+    - Closest to a machine learning algorithm for a Data Structure.
+    Steps:
+        - Get value.
+        - Hash it a number of times.
+            - hahs % num_bits
+                - set that index to 1 while others are 0.
+        - add extra char to the otiginal value and hash again.
+            - hahs %num_bits
+        - redo step 2.
+
+    To look up if the value is in the filter, we must know
+    what the extra characters were when rehashing. We look up 
+    the hashed values and check if it is.
+Hashing functions:
+    - Hash values have to be evenly distributed.
+    - Any two numbers/string that might be close to each other.
+
+
+Low level with Python:
+    - Anything stored in the computer is stored in binary already.
+
+Little Ending format:
+    - For biigger numbers we have an ordering where we have to decide
+    which of the addresses
+
+Bit operations:
+    - bit or (|): if bit is on in either place turn it on in the other.
