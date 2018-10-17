@@ -93,27 +93,21 @@ class OrderedTreeSet:
 
             return root
             
-            
+        def __pushLefts(root, stck):
+            while root is not None:
+                stck.append(root)
+                root = root.getLeft()
+
         def __iter__(self):
             nodeStack = []
             root = self.root
-            
-            # Push all left most nodes into the tree.
-            while root.getLeft() != None:
-                nodeStack.append(root)
-                root = root.getLeft()
-            nodeStack.append(root)
+            OrderedTreeSet.BinarySearchTree.__pushLefts(root, nodeStack)
 
             # Depth first search on the current node.
             while len(nodeStack) > 0:
                 top = nodeStack.pop()
                 yield top.getVal()
-                rightSub = top.getRight()
-                if rightSub != None:
-                    nodeStack.append(rightSub)
-                    while rightSub.getLeft() != None:
-                        rightSub = rightSub.getLeft()
-                        nodeStack.append(rightSub)
+                OrderedTreeSet.BinarySearchTree.__pushLefts(top.getRight(), nodeStack)
 
         def __find(node, item):
             if node == None:
