@@ -75,9 +75,9 @@ class PriorityQueue:
     def enqueue(self, item):
         if self.size == len(self.data):
             self.data.append(item)
-            self.__siftUpFrom(self.size)
         else:
             self.data[self.size] = item
+        self.__siftUpFrom(self.size)
         self.size += 1
 
     def dequeue(self):
@@ -101,18 +101,23 @@ def main():
 
     print(h)
     
-    lst = [100,10,20,25,5,8]
-    h = PriorityQueue(2,lst)
-    print(h)    
-    
-    lst = []
-    h = PriorityQueue(2,lst)
-    print(h)   
-    
-    lst = [100,10,20,25,5,8]
-    h = PriorityQueue(3,lst)
+    h.dequeue()
+    h.enqueue(1)
 
     print(h)
+
+    # lst = [100,10,20,25,5,8]
+    # h = PriorityQueue(2,lst)
+    # print(h)    
+    
+    # lst = []
+    # h = PriorityQueue(2,lst)
+    # print(h)   
+    
+    # lst = [100,10,20,25,5,8]
+    # h = PriorityQueue(3,lst)
+
+    # print(h)
     
 if __name__ == "__main__":
     main()
