@@ -1,3 +1,7 @@
+"""
+Using PriorityQueue as Heap.
+"""
+
 class PriorityQueue:
     """Docstring for PriorityQueue"""
     def __init__(self, degree = 2, contents = []):
@@ -69,17 +73,18 @@ class PriorityQueue:
                 done = True
 
     def enqueue(self, item):
-        self.data.append(item)
-        self.__siftUpFrom(self.size)
+        if self.size == len(self.data):
+            self.data.append(item)
+            self.__siftUpFrom(self.size)
+        else:
+            self.data[self.size] = item
         self.size += 1
 
     def dequeue(self):
         if not self.isEmpty():
             rv = self.data[0]
             lastEl = self.data[self.size-1]
-            self.data[0] = lastEl
-
-            self.data.pop()
+            self.data[0] = lastEl 
             self.size -= 1
             
             if self.size > 0:
