@@ -14,27 +14,29 @@ class BloomFilter(object):
     
         self.bA = bytearray(int(m+7)//8)
         self.numHashes = int(k + 0.5)
+
+        self.masks = {i : 1 << i for i in range(8)}
     
     def add(self, word):
         for i in range(self.numHashes):
             hv = hash(word + str(i))
-            bitIndex = hv % len((self.bA)*8)
+            bitIndex = hv % (len(self.bA)*8)
             bAindex = bitIndex >> 3
             exponent = bitIndex & 7
 
-            mask = 1 << exponent
+            mask = self.masks[exponent]
 
             self.bA[bAindex] |= mask
     
     def __contains__(self, word):
         for i in range(self.numHashes):
             hv = hash(word + str(i))
-            bitIndex = hv % len((self.bA)*8)
+            bitIndex = hv % (len(self.bA)*8)
 
             bAindex = bitIndex >> 3
             exponent = bitIndex & 7
 
-            mask = 1 << exponent
+            mask = self.masks[exponent]
 
             value = self.bA[bAindex] & mask
 
