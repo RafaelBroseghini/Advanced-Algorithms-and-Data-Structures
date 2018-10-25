@@ -9,6 +9,8 @@ This repo is a collection of exercises/problems using implementation from scratc
 * **Ordered Tree Set.**
   * **Binary Search Tree.**
 * **Priority Queue** *
+* **Bloom Filter**
+* **Trie**
 
 ## Notes:
 * Can we achieve O(1) time complexity for building; lookup; removal; insert; etc... (Data Structure utopia)?
