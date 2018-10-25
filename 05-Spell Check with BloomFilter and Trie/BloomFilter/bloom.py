@@ -65,7 +65,8 @@ def read_file_into_array(filename: str) -> list:
             line = line.split()
             for w in range(len(line)):
                 line[w] = line[w].lower().replace(".","").replace(",","") \
-                .replace(":","").replace(";","").replace("--","")
+                .replace(":","").replace(";","").replace("--","").replace("'","").replace("&","")
+
                 content.append(line[w])
     return content
     
