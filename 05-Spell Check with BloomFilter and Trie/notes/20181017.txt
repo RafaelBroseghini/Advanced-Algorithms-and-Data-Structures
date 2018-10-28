@@ -1,0 +1,34 @@
+Trie:
+    - root: 
+        - attr: value, follows, next
+
+    - insert "Cat": the key has to be something we break apart into units.
+        - "c"->"a"-"t"->"$"
+
+    - Dollar sign represents the end of the line.
+
+    - inserting "cow":
+        - "o" follows the "a"
+
+    - inserting: 
+        - recursive: one ket at a time, base case is when the key is empty.
+        two parameters, key and node we are trying to insert it in.
+
+        - if first part of the key matches the node we call insert on the follows
+        with slice of the key.
+
+        - if does not match insert the rest of key into the next.
+
+        - before you recursively add it, you add the dollar sign at the end of key
+            - cow becomes cow$
+        
+        - return root of the trie after inserting the value.
+
+        - if inserting the empty string return None.
+
+        - add dollar sign when inserting and lookup
+            - after inserting batman we check if batman is there and it is. but according to
+              our trie.
+        
+        - next is next word.
+        - follows is next character.
