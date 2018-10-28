@@ -52,7 +52,7 @@ class BloomFilter(object):
         return rv
 
 
-def read_file_into_bloom_filter(filename: str, bloom: BloomFilter) -> BloomFilter:
+def read_file_into_bloom_filter(filename: str, bloom: BloomFilter) -> None:
     with open(filename, "r+") as infile:
         for word in infile:
             word = word.rstrip()
