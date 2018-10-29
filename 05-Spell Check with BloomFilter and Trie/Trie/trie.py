@@ -1,5 +1,5 @@
 class Trie(object):
-    """Membership Data Structure"""
+    """reTRIEval Membership Data Structure"""
     def __insert(node, item):
         if len(item) == 0:
             return None
