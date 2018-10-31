@@ -1,22 +1,45 @@
 class Trie(object):
     """reTRIEval Membership Data Structure"""
+    class __TrieNode(object):
+        def __init__(self, item, next=None, follows=None):
+            self.item = item
+            self.next = next
+            self.follows = follows
+
+        def setFollows(self, newFollower):
+            self.follows = newFollower
+
+        def setNext(self, newNext):
+            self.next = newNext
+
+    def __init__(self):
+        self.start = None
+    
+    def insert(self, item):
+        item += "$"
+        self.start = Trie.__insert(self.start, item)
+    
+    def __contains__(self, item):
+        item += "$"
+        return Trie.__contains(self.start, item)
+
     def __insert(node, item):
         if len(item) == 0:
             return None
         elif node == None:
-            node = Trie.TrieNode(item[0])
+            node = Trie.__TrieNode(item[0])
 
         if node.item == item[0]:
             if node.follows == None:
                 if item == "$":
                     Trie.__insert(None, "")
                 else:
-                    node.setFollows(Trie.__insert(Trie.TrieNode(item[1]), item[1:]))
+                    node.setFollows(Trie.__insert(Trie.__TrieNode(item[1]), item[1:]))
             else:
                 Trie.__insert(node.follows, item[1:])
         else:
             if node.next == None:
-                node.setNext(Trie.__insert(Trie.TrieNode(item[0]), item))
+                node.setNext(Trie.__insert(Trie.__TrieNode(item[0]), item))
             else:
                 Trie.__insert(node.next, item)
 
@@ -32,29 +55,6 @@ class Trie(object):
             return Trie.__contains(node.follows, item[1:])
         else:
             return Trie.__contains(node.next, item)
-
-    class TrieNode(object):
-        def __init__(self, item, next=None, follows=None):
-            self.item = item
-            self.next = next
-            self.follows = follows
-
-        def setFollows(self, newFollower):
-            self.follows = newFollower
-
-        def setNext(self, newNext):
-            self.next = newNext
-    
-    def __init__(self):
-        self.start = None
-    
-    def insert(self, item):
-        item += "$"
-        self.start = Trie.__insert(self.start, item)
-    
-    def __contains__(self, item):
-        item += "$"
-        return Trie.__contains(self.start, item)
 
 
 def main():
