@@ -8,7 +8,7 @@ This repo is a collection of exercises/problems using implementation from scratc
 * **HashMap.**
 * **Ordered Tree Set.**
   * **Binary Search Tree.**
-* **Priority Queue** *
+* **Priority Queue as a Heap** 
 * **Bloom Filter**
 * **Trie**
 
