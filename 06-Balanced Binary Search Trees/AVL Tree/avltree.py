@@ -20,6 +20,9 @@ class AVLNode:
     if node == None:
       return 0
     return max(node.left.depth() if node.left else 0, node.right.depth() if node.right else 0) + 1
+  
+  def resetBalance(self):
+    self.balance = AVLNode.depth(self.right) - AVLNode.depth(self.left)
 
 
     """
@@ -65,7 +68,6 @@ class AVLNode:
       receiver.  Answer the root node of the new subtree.  
     '''
     child = self.left
-    print(child.item)
     if (child == None):
         print( 'Error!  No left child in rotateRight.' )
         return None  # redundant
@@ -143,7 +145,7 @@ class AVLTree:
           print("CASE TWO INSERTING", newItem)
           self.case2(pathStack, pivot, newItem)
         else:
-          self.case3(pathStack, pivot, newItem, inbalanceDirection)
+          self.case3(pathStack, pivot, newItem)
         # else:
         #   self.case3(pathStack, pivot, newItem)
 
@@ -179,25 +181,24 @@ class AVLTree:
     '''
     self.adjustBalances(theStack, pivot, newItem)
         
-  def case3(self, theStack, pivot, newItem, pivotInbalanceDirection):
+  def case3(self, theStack, pivot, newItem):
     '''  The pivot node exists.  We have inserted a new node into the
         larger height subtree of the pivot node.  Hence rebalancing and 
         rotations are needed.
     '''
     self.adjustBalances(theStack, pivot, newItem)
-    # After adjusting balance
-    print(pivot.balance)
-    if pivot.balance > 0:
-      badChild = pivot.right
-    else:
-      badChild = pivot.left
+    
+    pivotInbalanceDirection = "right" if pivot.balance > 0 else "left"
+    badChild = pivot.right if pivot.balance > 0 else pivot.left
+    badGrandChild = badChild.right if badChild.balance > 0 else badChild.left
 
     print("BAD CHILD IS", badChild.item)
+    print("BAD GRAND CHILD IS", badGrandChild.item)
 
     badChildinsertingDirection = "right" if newItem > badChild.item else "left"
 
     print("BAD CHILD INSERTING DIR", badChildinsertingDirection)
-    pivotsParent = theStack.pop() if len(theStack) > 0 else None
+    pivotsParent = theStack.pop() if len(theStack) > 0 else pivot
 
     if pivotInbalanceDirection == badChildinsertingDirection:
       print("CASE THREE (A) INSERTING", newItem)
@@ -212,7 +213,50 @@ class AVLTree:
       badChild.balance = 0
     else:
       # CASE 3b
+      # print(badGrandChild)
+      # exit()
       print("CASE THREE (B) INSERTING", newItem)
+      if pivotInbalanceDirection == "left":
+        # if badChild.item > badGrandChild.item:
+        #   pivot.right = badChild.rotateLeft()
+        # else:
+        pivot.left = badChild.rotateLeft()
+        self.root = pivot.rotateRight()
+        # pivot.rotateRight()
+      else:
+        # if badChild.item > badGrandChild.item:
+        #   pivot.right = badChild.rotateRight()
+        # else:
+        pivot.right = badChild.rotateRight()
+        self.root = pivot.rotateLeft()
+        # pivot.rotateLeft()
+      # print("PRINTING ROOT")
+      # print(self.root.item)
+      # print(AVLNode.depth(self.root.right))
+      # print(AVLNode.depth(self.root.left))
+      # badChild.resetBalance()
+      # print(badChild.balance)
+
+      # print(badChild.item)
+      # # print(self.root.right.item)
+      # # print(self.root.right.left.item)
+      # # print(self.root.right.right.item)
+      # # print(self.root.right.right.left.item)
+      # # print(self.root.right.right.right.item)
+      # # print(self.root.item)
+      # # print(self.root.item)
+
+      if badGrandChild == None:
+        pivot.balance = 0
+        badChild.balance = 0
+      else:
+        print(pivot.item)
+        badGrandChild.resetBalance()
+        badChild.resetBalance()
+        pivot.resetBalance()
+
+
+
       pass
   # Lots more!!!!
         
@@ -253,21 +297,21 @@ class AVLTree:
             
 def main():
   print()
-  #  a = AVLNode(20, -1)
-  #  b = AVLNode( 30, -1)
-  #  c = AVLNode(-100)
-  #  d = AVLNode(290)
+  a = AVLNode(20, -1)
+  b = AVLNode( 30, -1)
+  c = AVLNode(-100)
+  d = AVLNode(290)
 
   #  print(a)
   #  print(b)
 
   t = AVLTree()
-  #  t.root = b
-  #  b.left = a
-  #  a.left = c
-  #  b.right = d
-  #  t.count = 4
-  #  print(t)
+  t.root = b
+  b.left = a
+  a.left = c
+  b.right = d
+  t.count = 4
+  print(t)
 
   #  print(t.search(-100))
   # print(t.insert(10))
@@ -293,17 +337,19 @@ def main():
   # print(t)
   # t.insert(38)
   # print(t)
+  # t.insert(11)
+  # print(t)
 
-  t.insert(25)
-  print(t)
-  t.insert(15)
-  print(t)
-  t.insert(40)
-  print(t)
-  t.insert(50)
-  print(t)
-  t.insert(65)
-  print(t)
+  # t.insert(25)
+  # print(t)
+  # t.insert(15)
+  # print(t)
+  # t.insert(40)
+  # print(t)
+  # t.insert(50)
+  # print(t)
+  # t.insert(65)
+  # print(t)
 
   # found, pathStack, parent, pivot = t.insert(65)
   # print(found)
