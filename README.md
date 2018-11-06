@@ -11,6 +11,7 @@ This repo is a collection of exercises/problems using implementation from scratc
 * **Priority Queue as a Heap** 
 * **Bloom Filter**
 * **Trie**
+* **AVL Tree**
 
 ## Notes:
 * Can we achieve O(1) time complexity for building; lookup; removal; insert; etc... (Data Structure utopia)?
