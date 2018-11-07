@@ -1,9 +1,11 @@
-'''
-  File:  avltree.py 
-  Author: Steve Hubbard,  and 
-  Date:  
-  Description:  This module provides the AVLNode and AVLTree classes.
-'''
+"""
+AVL TREE implementation.
+"""
+
+__author__ = "Rafael Broseghini"
+
+import random
+import time
 
 class Stack(object):
     """docstring for Stack."""
@@ -41,14 +43,6 @@ class AVLNode:
     if node == None:
       return 0
     return max(node.left.depth() if node.left else 0, node.right.depth() if node.right else 0) + 1
-  
-  def check(self):
-    if node != None:
-      if self.balance > 2 or self.balance < -2:
-        raise Exception("Wrong balance at node: {}".format(self.item))
-      
-      AVLNode.depth(self.right) 
-      AVLNode.depth(self.left)
 
     """
     check calls depth to check each of the balances. Maybe depth calls
@@ -125,6 +119,14 @@ class AVLTree:
   def __str__(self):
     st = 'There are ' + str(self.count) + ' nodes in the AVL tree.\n'
     return  st + str(self.root)  # Using the string hook for AVL nodes
+
+  def check(self, node):
+    if node != None:
+      if node.balance > 2 or node.balance < -2:
+        raise Exception("Wrong balance at node: {}".format(node.item))
+      
+      self.check(node.right) 
+      self.check(node.left)
  
   def insert(self, newItem):
     '''  Add a new node with item newItem, if there is not a match in the 
@@ -160,6 +162,8 @@ class AVLTree:
           self.case2(pathStack, pivot, newItem)
         else:
           self.case3(pathStack, pivot, newItem)
+    
+
 
   def adjustBalances(self, theStack, pivot, newItem):
     '''  We adjust the balances of all the nodes in theStack, up to and
@@ -207,6 +211,7 @@ class AVLTree:
     badChildinsertingDirection = "right" if newItem > badChild.item else "left"
     pivotsParent = theStack.pop() if (not theStack.isEmpty()) else pivot
 
+
     if pivotInbalanceDirection == badChildinsertingDirection:
       if badChildinsertingDirection == "left":
         if pivotsParent == pivot:
@@ -230,15 +235,28 @@ class AVLTree:
     else:
       # CASE 3b
       if pivotInbalanceDirection == "left":
-        self.root = pivot.rotateLeftThenRight()
+        if pivotsParent == pivot:
+          self.root = pivot.rotateLeftThenRight()
+        else:
+          if newItem > pivotsParent.item:
+            pivotsParent.right = pivot.rotateLeftThenRight()
+          else:
+            pivotsParent.left = pivot.rotateLeftThenRight()
       else:
-        self.root = pivot.rotateRightThenLeft()
+        if pivotsParent == pivot:
+          self.root = pivot.rotateRightThenLeft()
+        else:
+          if newItem > pivotsParent.item:
+            pivotsParent.right = pivot.rotateRightThenLeft()
+          else:
+            pivotsParent.left = pivot.rotateRightThenLeft()
 
       if badGrandChild == None:
         pivot.balance = 0
         badChild.balance = 0
       else:
         badGrandChild.balance = 0
+        
         if badChildinsertingDirection == "right":
           if newItem < badGrandChild.item:
             badChild.balance = 0
@@ -267,6 +285,7 @@ class AVLTree:
       reference to the node used to add a child in insert().
     '''
     found, pathStack, parent, pivot = False, Stack(), self.root, None
+
     if self.count > 0:
       node = self.root
 
@@ -284,6 +303,7 @@ class AVLTree:
             node = node.right
           else:
             node = node.left
+
     return found, pathStack, parent, pivot
 
   def __pushLefts(root, stck):
@@ -309,86 +329,32 @@ class AVLTree:
             
             
 def main():
-  print()
   t = AVLTree()
-  # a = AVLNode(20, -1)
-  # b = AVLNode( 30, -1)
-  # c = AVLNode(-100)
-  # d = AVLNode(290)
 
-  # #  print(a)
-  # #  print(b)
+  # vals = set()
+  # while len(vals) < 1000:
+  #   vals.add(random.randint(1,10000001))
 
-  # t.root = b
-  # b.left = a
-  # a.left = c
-  # b.right = d
-  # t.count = 4
-  # print(t)
-
-  # print(t.search(-100))
   vals = [10,3,18,2,13,4,40,39,12,14,38,11]
-  # vals = [25,15,40,50,65,33]
-  # vals = range(1,5)
+  start = time.time()
   for v in vals:
     t.insert(v)
+    # Checking the tree everytime to see if it was inserted correctly.
+    t.check(t.root)
+
+  count = 0
+  for node in t:
+    count += 1
+
+  print("Elements in the AVL tree:", t.count)
+  print("Elements counted in the AVL tree through the __iter__ method :",count)
+  assert count == t.count
+
+  end = time.time()
+
   print(repr(t))
 
-  # for i in t:
-  #   print(i)
-              
-  # a = AVLNode(50)
-  # b = AVLNode(30)
-  # c = AVLNode(40)
-  # a.left = b
-  # b.right = c
-  # print("Testing rotateLeftThenRight()")
-  # print(a.rotateLeftThenRight())
-
-
-  # found, pathStack, parent, pivot = t.search(-70)
-  # print(pivot.item, parent.item, found)
-  # print()
-  # print("The items in the nodes of the stack are: ")
-  # while not pathStack.isEmpty():
-  #   current = pathStack.pop()
-  #   print(current.item)
-  # print()
-
-  # (pivot, pathStack, parent, found) = t.search(25)
-  # print(pivot.item, parent.item, found)
-  
-  # (pivot, pathStack, parent, found) = t.search(-100)
-  # print(pivot.item, parent.item, found)
-
-  #  n1 = AVLNode(50,0)
-  #  n2 = AVLNode(75,0)
-  #  n3 = AVLNode(62,0,n1,n2)
-
-  #  tree = AVLTree(3,n3)
+  print("\nFinished inserting and checking validity of AVL Tree in {:.3f}s".format(end-start))
    
-if __name__ == '__main__': main()
-'''  The output from main():
-[evaluate avltree.py]
-Our names are
-There are 4 nodes in the AVL tree.
--100 0
-20 -1
-30 -1
-290 0
-
-Testing rotateLeftThenRight()
-30 0
-40 0
-50 0
-
-20 -100 False
-
-The items in the nodes of the stack are: 
--100
-20
-30
-
-20 20 False
-20 -100 True
-'''
+if __name__ == '__main__': 
+  main()
