@@ -12,6 +12,12 @@ class Trie(object):
         def setNext(self, newNext):
             self.next = newNext
 
+        def getFollows(self):
+            return self.follows
+
+        def getNext(self):
+            return self.next
+
     def __init__(self):
         self.start = None
     
@@ -25,23 +31,15 @@ class Trie(object):
 
     def __insert(node, item):
         if len(item) == 0:
-            return None
-        elif node == None:
+            return node
+        
+        if node == None:
             node = Trie.__TrieNode(item[0])
 
         if node.item == item[0]:
-            if node.follows == None:
-                if item == "$":
-                    Trie.__insert(None, "")
-                else:
-                    node.setFollows(Trie.__insert(Trie.__TrieNode(item[1]), item[1:]))
-            else:
-                Trie.__insert(node.follows, item[1:])
+            node.setFollows(Trie.__insert(node.getFollows(), item[1:]))
         else:
-            if node.next == None:
-                node.setNext(Trie.__insert(Trie.__TrieNode(item[0]), item))
-            else:
-                Trie.__insert(node.next, item)
+            node.setNext(Trie.__insert(node.getNext(), item))
 
         return node
     
