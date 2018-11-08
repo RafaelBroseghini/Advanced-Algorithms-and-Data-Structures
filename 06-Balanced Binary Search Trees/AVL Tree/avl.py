@@ -331,11 +331,11 @@ class AVLTree:
 def main():
   t = AVLTree()
 
-  # vals = set()
-  # while len(vals) < 1000:
-  #   vals.add(random.randint(1,10000001))
+  vals = set()
+  while len(vals) < 1000:
+    vals.add(random.randint(1,10000001))
 
-  vals = [10,3,18,2,13,4,40,39,12,14,38,11]
+  # vals = [10,3,18,2,13,4,40,39,12,14,38,11]
   start = time.time()
   for v in vals:
     t.insert(v)
