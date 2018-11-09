@@ -46,9 +46,10 @@ class Trie(object):
     def __contains(node, item):
         if len(item) == 0:
             return True
-        elif node == None:
-            return False
         
+        if node == None:
+            return False
+
         if node.item == item[0]:
             return Trie.__contains(node.follows, item[1:])
         else:
