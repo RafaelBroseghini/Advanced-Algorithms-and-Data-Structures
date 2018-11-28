@@ -115,54 +115,51 @@ class BTreeNode:
         return self as left and None for item and right. Otherwise, return 
         two new nodes and the item that will separate the two nodes in the parent. 
         '''
-        print("Looking at", self.getIndex())
-        print("children", self.child)
-        if self.isLeaf() and not self.isFull():
-            self.items[self.numberOfKeys] = item
-            self.items = sorted(self.items, key=lambda x: (x is None, x))
-            self.numberOfKeys += 1
+        
+        print("Looking at node with index:", self.getIndex())
+        print("Node's items:", self.items)
+        print("Node's children:", self.child)
+        if self.isLeaf():
+            if not self.isFull():
+                print("Not Full Leaf!")
+                self.items[self.numberOfKeys] = item
+                self.items = sorted(self.items, key=lambda x: (x is None, x))
+                self.numberOfKeys += 1
+                print(self.items)
+                print("DONE")
+                return self, None, None
+            
+            print("Full leaf!")
+            print("Items:", self.items)
 
-            return self, None, None
-
-        elif self.isFull() and self.isLeaf():
-            print("Splitting!")
-            leftIndex, promoted, rightIndex = BTreeNode.splitNode(self, bTree, item, bTree.getFreeNode())
-            if self == bTree.rootNode:
-                newNode = bTree.getFreeNode()
-                newNode.items[newNode.getNumberOfKeys()] = promoted
-                newNode.numberOfKeys += 1
-
-                newNode.setChild(0, leftIndex)
-                newNode.setChild(1, rightIndex)
-
-                bTree.rootNode = newNode
-            else:
-                print(self.index)
-                print("HERE")
-                print(leftIndex, promoted, rightIndex)
-                print(bTree.rootNode)
-                return leftIndex, promoted, rightIndex
-
+            return BTreeNode.splitNode(self, bTree, item, None)
         else:
+            print("Not a leaf node!")
             index, done = 0, False
+
             while not done and self.items[index] < item:
-                index += 1
-                if self.items[index] == None:
+                if self.items[index] == None or index == self.getNumberOfKeys()-1:
                     done = True
                 
-            nodeIdx = bTree.nodes[self.getIndex()].child[index]
+                index += 1
 
-            print("Node", bTree.nodes[nodeIdx])
-            leftIndex, promoted, rightIndex = BTreeNode.insert(bTree.nodes[nodeIdx], bTree, item)`
+            print("RECURSIVE CALL")
+            leftIndex, promoted, rightIndex = BTreeNode.insert(bTree.nodes[self.getChild(index)], bTree, item)
 
-            if promoted != None:
-                print("NOT NONE")
-                if not self.isFull():
-                    self.items[self.getNumberOfKeys()] = promoted
-                    self.child[self.getNumberOfKeys()] = leftIndex
-                    self.child[self.getNumberOfKeys()+1] = rightIndex
+            if promoted != None and not self.isFull():
+                self.items[self.getNumberOfKeys()] = promoted
+                self.items = sorted(self.items, key=lambda x: (x is None, x))
 
-                    self.numberOfKeys += 1
+                indexPromoted = self.items.index(promoted)
+                self.child.insert(indexPromoted+1, rightIndex)
+                print(self.child)
+                self.child.pop()
+                self.numberOfKeys += 1
+            else:
+                if promoted != None and self.isFull():
+                    return self.splitNode(bTree, promoted, rightIndex)
+
+            return self, None, None
                 
         
 
@@ -178,6 +175,7 @@ class BTreeNode:
         items = self.items + [item]
         items.sort()
 
+        print(items)
         children = []
 
         indexInsertedItem = items.index(item)
@@ -187,18 +185,22 @@ class BTreeNode:
 
         for i in range(bTree.degree*2+1):
             if i == indexInsertedItem:
-                children.append(right.getIndex())
+                children.append(right)
             else:
                 children.append(self.child[j])
                 j += 1
         
+        print(children)
         promotedItemIdx = len(items) // 2
         promotedItem = items[promotedItemIdx]
-        print(items)
-        print(promotedItemIdx)
 
         self.items = items
         self.setNumberOfKeys(len(items[:promotedItemIdx]))
+
+        print("ITEMS", self.items)
+
+        right = bTree.getFreeNode()
+        print("Created node with index:", right.getIndex())
 
         right.setNumberOfKeys(len(items[promotedItemIdx+1:]))
 
@@ -208,12 +210,21 @@ class BTreeNode:
             right.items[z] = items[i]
             z += 1
 
-        print(self.items)
-        print(right.items)
+        leftChildren, rightChildren = children[:len(children)//2], children[len(children)//2:]
+        for i in range(len(leftChildren)):
+            self.child[i] = leftChildren[i]
 
-        print(items[promotedItemIdx])
+        j = 0
+        for i in range(len(rightChildren)):
+            right.child[j] = rightChildren[i]
+            j += 1
 
-        print(children)
+        self.items = items[:promotedItemIdx] + [None] * (bTree.degree*2 - len(items[:promotedItemIdx]))
+        print("\nLeft Node items:", items[:promotedItemIdx])
+        print("Promoted Item:", items[promotedItemIdx])
+        print("Right Node items:", right.items)
+
+        print("Children:", children)
         
         return self.getIndex(), promotedItem, right.getIndex()
 
@@ -233,7 +244,38 @@ class BTreeNode:
            and a deep copy of the item in the tree if it is found.
            As a side-effect, the tree is updated to delete the item.
         '''
-        pass
+        if item in self.items:
+            itemIdx = self.items.index(item)
+            if self == bTree.rootNode:
+                pass
+
+            else:
+                if self.isLeaf():
+                    print("I am a leaf node.")
+                    if self.getNumberOfKeys() > bTree.degree:
+                        self.items.pop(itemIdx)
+                        self.items.append(None)
+                        self.numberOfKeys -= 1
+
+                        return item
+                    else:
+                        # Rebalancing!
+                        pass
+                else:
+                    # Get left most and may cause a rebalancing again.
+                    pass
+                
+        else:
+            index, done = 0, False
+            while not done and self.items[index] < item:
+                if self.items[index] == None or index == self.getNumberOfKeys()-1:
+                    done = True
+                
+                index += 1
+            node = bTree.readFrom(self.getChild(index))
+            return BTreeNode.delete(node, bTree, item)
+
+
         
     def redistributeOrCoalesce(self,bTree,childIndex):
         '''
@@ -299,42 +341,23 @@ class BTreeNode:
           node's index. nodeIndex and fileIndex are only set if the 
           item is found in the current node. 
         '''
-        data = {"found": False, "nodeIndex": None, "fileIndex": None}
+        
+        for i in range(self.getNumberOfKeys()):
+            if self.items[i] == None:
+                return {"found": False, "nodeIndex": None, "fileIndex": self.getIndex()}
 
-        q, done = Queue(), False
-        q.enqueue(self)
+            if self.items[i] == item:
+                return {"found": True, "nodeIndex": i, "fileIndex": self.getIndex()}
 
-        while not done and not q.isEmpty():
-            current = q.dequeue()
-            # print(self)
-            for i in range(current.numberOfKeys):
-                # print(current.items)
-                # print(current.child)
-                # print(current.items[i])
-                # print(i)
-                if current.items[i] == item:
-                    data["found"] = True
-                    data["nodeIndex"] = i
-                    data["fileIndex"] = current.index
-                    print(data)
-                    return data
-    
-                elif current.items[i] > item and not current.isLeaf():
-                    newNode = bTree.nodes[current.getChild(i)]
-                    q.enqueue(newNode)
+            if self.items[i] > item and self.isLeaf() == False:
+                node = bTree.nodes[self.getChild(i)]
+                return node.search(bTree, item)
 
-                elif i == current.numberOfKeys -1 and not current.isLeaf():
-                    newNode = bTree.nodes[current.getChild(i+1)]
-                    q.enqueue(newNode)
+            if i == (self.getNumberOfKeys()-1) and self.isLeaf() == False:
+                node = bTree.nodes[self.getChild(i+1)]
+                return node.search(bTree, item)
 
-                else:
-                    data["fileIndex"] = current.index
-                    done = True
-
-        # print(data)
-        return data
-
-
+        return {"found": False, "nodeIndex": None, "fileIndex": self.getIndex()}
 
 class BTree:
     def __init__(self, degree, nodes = {}, rootIndex = 1, freeIndex = 2):
@@ -372,7 +395,13 @@ class BTree:
         ''' Answer None if a matching item is not found.  If found,
           answer the entire item.
         ''' 
-        pass
+        data = BTree.__searchTree(self, anItem)
+
+        if data["found"] == False:
+            return None
+
+        # node = self.readFrom(data["fileIndex"])
+        return BTreeNode.delete(self.rootNode, self, anItem)
 
     def getFreeIndex(self):
         # Answer a new index and update freeIndex.  Private
@@ -414,7 +443,16 @@ class BTree:
         
         anItem = deepcopy(anItem)
 
-        BTreeNode.insert(self.rootNode, self, anItem)
+        left, middle, right = BTreeNode.insert(self.rootNode, self, anItem)
+    
+        if middle != None:
+            newNode = self.getFreeNode()
+            newNode.items[0] = middle
+            newNode.setChild(0, left)
+            newNode.setChild(1, right)
+            newNode.setNumberOfKeys(1)
+            self.rootNode = newNode
+            self.rootIndex = newNode.getIndex()
 
         return anItem
 
@@ -451,6 +489,7 @@ class BTree:
 
     def __contains__(self, item):
         data = self.__searchTree(item)
+        # print(data)
 
         if data["found"] == True:
             return True
@@ -464,7 +503,7 @@ class BTree:
           at 'found' is False, but the entry for 'fileIndex' is the
           leaf node where the search terminated.
         '''
-        data = BTreeNode.search(self.rootNode, self, anItem)
+        data = self.rootNode.search(self, anItem)
         return data
 
  
@@ -486,50 +525,27 @@ class BTree:
 def btreemain():
     print("My/Our name(s) is/are ")
 
-    lst = [10,8,22,14,12,18,2,50,15]
+    lst = [100,80,220,140,120,180,200,500,150,90,110,160,170,130,190,151,152,111]
     # lst = [10,8,22,14,12,18,2,50,15]
     
     b = BTree(2)
 
-    # b.nodes[1].numberOfKeys = 1
-    # b.nodes[1].items[0] = 20
-    # b.nodes[1].child[0] = 3
-    # b.nodes[1].child[1] = 2
-
-    # b.writeAt(2, BTreeNode(2, numberOfKeys=2))
-    # b.nodes[2].setIndex(2)
-    # b.nodes[2].items[0] = 40
-    # b.nodes[2].items[1] = 60
-
-    # b.writeAt(3, BTreeNode(2, numberOfKeys=1))
-    # b.nodes[3].setIndex(3)
-    # b.nodes[3].items[0] = 10
-    # b.nodes[3].items[1] = 60
-
-
-    # print(20 in b)
-    # print(40 in b)
-    # print(60 in b)
-    # print(10 in b)
-    # print(80 in b)
-    # print(30 in b)
-    # print(5 in b)
-
-    # print(b.retrieve(20))
-    # print(b.retrieve(40))
-    # print(b.retrieve(60))
-    # print(b.retrieve(10))
-    # print(b.retrieve(80))
-
-    
     for x in lst:
         print(repr(b))
+        print("="*60)
         print("***Inserting",x)
         b.insert(x)
     
+    print("\n-----Tree after all inserts.-----")
     print(repr(b))
 
-    print(b.rootNode)
+    # for x in lst:
+    #     print(x, x in b)
+
+    print(b.rootIndex)
+
+    print(b.delete(180))
+    print(repr(b))
     
     # lst = [14,50,8,12,18,2,10,22,15]
     
@@ -560,170 +576,6 @@ def btreemain():
     # b.delete(84)
     
     # print(repr(b))
-    
-'''
-Here is the expected output from running this program. Depending on the order of 
-redistributing or coalescing, your output may vary. However, the end result in 
-every case should be the insertion or deletion of the item from the BTree. 
-
-My/Our name(s) is/are 
-BTree(2,
- {1: BTreeNode(2,0,[None, None, None, None],[None, None, None, None, None],1)
-},1,2)
-***Inserting 10
-BTree(2,
- {1: BTreeNode(2,1,[10, None, None, None],[None, None, None, None, None],1)
-},1,2)
-***Inserting 8
-BTree(2,
- {1: BTreeNode(2,2,[8, 10, None, None],[None, None, None, None, None],1)
-},1,2)
-***Inserting 22
-BTree(2,
- {1: BTreeNode(2,3,[8, 10, 22, None],[None, None, None, None, None],1)
-},1,2)
-***Inserting 14
-BTree(2,
- {1: BTreeNode(2,4,[8, 10, 14, 22],[None, None, None, None, None],1)
-},1,2)
-***Inserting 12
-BTree(2,
- {1: BTreeNode(2,2,[8, 10, None, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,2,[14, 22, None, None],[None, None, None, None, None],2)
-, 3: BTreeNode(2,1,[12, None, None, None],[1, 2, None, None, None],3)
-},3,4)
-***Inserting 18
-BTree(2,
- {1: BTreeNode(2,2,[8, 10, None, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,3,[14, 18, 22, None],[None, None, None, None, None],2)
-, 3: BTreeNode(2,1,[12, None, None, None],[1, 2, None, None, None],3)
-},3,4)
-***Inserting 2
-BTree(2,
- {1: BTreeNode(2,3,[2, 8, 10, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,3,[14, 18, 22, None],[None, None, None, None, None],2)
-, 3: BTreeNode(2,1,[12, None, None, None],[1, 2, None, None, None],3)
-},3,4)
-***Inserting 50
-BTree(2,
- {1: BTreeNode(2,3,[2, 8, 10, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,4,[14, 18, 22, 50],[None, None, None, None, None],2)
-, 3: BTreeNode(2,1,[12, None, None, None],[1, 2, None, None, None],3)
-},3,4)
-***Inserting 15
-BTree(2,
- {1: BTreeNode(2,3,[2, 8, 10, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,2,[14, 15, None, None],[None, None, None, None, None],2)
-, 3: BTreeNode(2,2,[12, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,2,[22, 50, None, None],[None, None, None, None, None],4)
-},3,5)
-***Deleting 14
-**Redistribute From Left**
-BTree(2,
- {1: BTreeNode(2,2,[2, 8, 10, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,2,[12, 15, None, None],[None, None, None, None, None],2)
-, 3: BTreeNode(2,2,[10, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,2,[22, 50, None, None],[None, None, None, None, None],4)
-},3,5)
-***Deleting 50
-**Coalesce with Left Sibling in node with index 3
-BTree(2,
- {1: BTreeNode(2,2,[2, 8, 10, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,4,[12, 15, 18, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,1,[10, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},3,5)
-***Deleting 8
-**Redistribute From Right**
-BTree(2,
- {1: BTreeNode(2,2,[2, 10, 10, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,3,[15, 18, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,1,[12, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},3,5)
-***Deleting 12
-BTree(2,
- {1: BTreeNode(2,2,[2, 10, 10, None],[None, None, None, None, None],1)
-, 2: BTreeNode(2,2,[18, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,1,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},3,5)
-***Deleting 18
-**Coalesce with Left Sibling in node with index 3
-BTree(2,
- {1: BTreeNode(2,4,[2, 10, 15, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Deleting 2
-BTree(2,
- {1: BTreeNode(2,3,[10, 15, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Deleting 10
-BTree(2,
- {1: BTreeNode(2,2,[15, 22, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Deleting 22
-BTree(2,
- {1: BTreeNode(2,1,[15, 22, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Deleting 15
-BTree(2,
- {1: BTreeNode(2,0,[15, 22, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Deleting 54
-54 not found during delete.
-BTree(2,
- {1: BTreeNode(2,0,[15, 22, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Deleting 76
-76 not found during delete.
-BTree(2,
- {1: BTreeNode(2,0,[15, 22, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Inserting 14
-BTree(2,
- {1: BTreeNode(2,1,[14, 22, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Deleting 2
-2 not found during delete.
-BTree(2,
- {1: BTreeNode(2,1,[14, 22, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-***Deleting 84
-84 not found during delete.
-BTree(2,
- {1: BTreeNode(2,1,[14, 22, 22, 22],[None, None, None, None, None],1)
-, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
-, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
-, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
-},1,5)
-'''
 
 def main():
     btreemain()
