@@ -24,50 +24,6 @@ import datetime
 import os
 from copy import deepcopy
 import sys
-# import queue
-
-class Queue:
-    def __init__(self):
-        self.items = []
-        self.frontIdx = 0
-        
-    def __compress(self):
-        newitems = []
-        for i in range(self.frontIdx,len(self.items)):
-            newitems.append(self.items[i])
-            
-        self.items = newitems
-        self.frontIdx = 0
-        
-    def dequeue(self):
-        if self.isEmpty():
-            raise RuntimeError("Attempt to dequeue an empty queue")
-        
-        # When queue is half full, compress it. This 
-        # achieves an amortized complexity of O(1) while
-        # not letting the list continue to grow unchecked. 
-        if self.frontIdx * 2 > len(self.items):
-            self.__compress()
-            
-        item = self.items[self.frontIdx]
-        self.frontIdx += 1
-        return item
-    
-    def enqueue(self,item):
-        self.items.append(item)
-        
-    def front(self):
-        if self.isEmpty():
-            raise RuntimeError("Attempt to access front of empty queue")
-        
-        return self.items[self.frontIdx]
-        
-    def isEmpty(self):
-        return self.frontIdx == len(self.items)
-
-    def clear(self):
-        self.items = []
-        self.frontIdx = 0
     
 class BTreeNode:
     '''
@@ -213,13 +169,17 @@ class BTreeNode:
         leftChildren, rightChildren = children[:len(children)//2], children[len(children)//2:]
         for i in range(len(leftChildren)):
             self.child[i] = leftChildren[i]
-
+        
         j = 0
         for i in range(len(rightChildren)):
             right.child[j] = rightChildren[i]
             j += 1
 
         self.items = items[:promotedItemIdx] + [None] * (bTree.degree*2 - len(items[:promotedItemIdx]))
+        
+        for i in range(len(self.child)-1,self.getNumberOfKeys(),-1):
+            self.child[i] = None
+
         print("\nLeft Node items:", items[:promotedItemIdx])
         print("Promoted Item:", items[promotedItemIdx])
         print("Right Node items:", right.items)
@@ -246,24 +206,26 @@ class BTreeNode:
         '''
         if item in self.items:
             itemIdx = self.items.index(item)
-            if self == bTree.rootNode:
-                pass
+            if self.isLeaf():
+                # Leaf nodes can have degree or less items.
+                print("I am a leaf node.")
+                if self.getNumberOfKeys() > bTree.degree:
+                    self.items.pop(itemIdx)
+                    self.items.append(None)
+                    self.numberOfKeys -= 1
 
-            else:
-                if self.isLeaf():
-                    print("I am a leaf node.")
-                    if self.getNumberOfKeys() > bTree.degree:
-                        self.items.pop(itemIdx)
-                        self.items.append(None)
-                        self.numberOfKeys -= 1
-
-                        return item
-                    else:
-                        # Rebalancing!
-                        pass
+                    return item
                 else:
-                    # Get left most and may cause a rebalancing again.
-                    pass
+                    # Rebalancing!
+                    self.redistributeOrCoalesce(bTree, self.getIndex())
+                    return item
+            else:
+                # Get left most and may cause a rebalancing again.
+                rightChild = itemIdx + 1
+                node = bTree.readFrom(self.getChild(rightChild)) 
+                successor = node.getLeftMost(bTree)
+                self.items[itemIdx] = BTreeNode.delete(bTree.rootNode, bTree, successor)
+                return item
                 
         else:
             index, done = 0, False
@@ -291,9 +253,10 @@ class BTreeNode:
 
           This method does not return anything, but has the 
           side-effect of redistributing or coalescing
-          the child node with a sibling if needed. 
+          the child node with a sibling if needed.
         '''
-        pass 
+        current = self
+        return
 
 
     def getChild(self,i):
@@ -526,6 +489,7 @@ def btreemain():
     print("My/Our name(s) is/are ")
 
     lst = [100,80,220,140,120,180,200,500,150,90,110,160,170,130,190,151,152,111]
+    # lst = [100,80,220,140,120,180,200,500,150,90,110,160,170,130,190,151,152,111]
     # lst = [10,8,22,14,12,18,2,50,15]
     
     b = BTree(2)
@@ -544,8 +508,10 @@ def btreemain():
 
     print(b.rootIndex)
 
-    print(b.delete(180))
+    # print(b.delete(500))
+    print(b.delete(111))
     print(repr(b))
+    # print(repr(b))
     
     # lst = [14,50,8,12,18,2,10,22,15]
     
