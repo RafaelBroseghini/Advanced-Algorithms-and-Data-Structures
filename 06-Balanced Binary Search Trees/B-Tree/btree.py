@@ -195,8 +195,10 @@ class BTreeNode:
                 rightChild = itemIdx + 1
                 node = bTree.readFrom(self.getChild(rightChild)) 
                 successor = node.getLeftMost(bTree)
-                self.items[itemIdx] = BTreeNode.delete(bTree.rootNode, bTree, successor)
-                return item
+                res = BTreeNode.delete(bTree.rootNode, bTree, successor)
+                # self.items[itemIdx] = BTreeNode.delete(bTree.rootNode, bTree, successor)
+                self.redistributeOrCoalesce(bTree, itemIdx)
+                # return item
                 
         else:
             index, done = 0, False
@@ -262,16 +264,16 @@ class BTreeNode:
                 # Coalesce
                 if chosenSibling == leftSibling:
                     parentItem = self.items[childIndex-1]
-                    # self.items[childIndex-1] = None
                     self.numberOfKeys -= 1
                 else:
                     parentItem = self.items[childIndex]
-                    # self.items[childIndex] = None
                     self.numberOfKeys -= 1
 
                 for i in range(childIndex, len(self.items)-1):
                     self.items[i] = self.items[i+1]
+                for i in range(childIndex, len(self.child)-1):
                     self.child[i] = self.child[i+1]
+                
 
                     
                 if self.getNumberOfKeys() == 0:
@@ -289,6 +291,8 @@ class BTreeNode:
                         tempItems.append(None)
                         tempChild.append(None)
 
+                    print(tempChild)
+                    
                     if chosenSibling.getIndex() == self.child[0]:
                         for i in range(chosenSibling.getNumberOfKeys()+1):
                             tempChild.append(chosenSibling.child[i])
@@ -545,7 +549,7 @@ class BTree:
 def btreemain():
     print("My/Our name(s) is/are ")
 
-    lst = [10,8,22,14,12,18,2,50,15]
+    lst = [10,8,22,14,12,18,2,50,15,16,17,18,19,20,1,2,3,4,5,5,6,7,8,]
     
     b = BTree(2)
     
@@ -556,34 +560,37 @@ def btreemain():
     
     print(repr(b))
     
-    lst = [14,50,8,12,18,2,10,22,15]
+    # lst = [14,50,8,12,18,2,10,22,15]
+    lst = [14,50,8,12,18,2]
+
+
     
     for x in lst:
         print("***Deleting",x)
         b.delete(x) 
         print(repr(b))
     
-    lst = [54,76]
+    # lst = [54,76]
     
-    for x in lst:
-        print("***Deleting",x)
-        b.delete(x)
-        print(repr(b))
+    # for x in lst:
+    #     print("***Deleting",x)
+    #     b.delete(x)
+    #     print(repr(b))
         
-    print("***Inserting 14")
-    b.insert(14)
+    # print("***Inserting 14")
+    # b.insert(14)
     
-    print(repr(b))
+    # print(repr(b))
     
-    print("***Deleting 2")
-    b.delete(2)
+    # print("***Deleting 2")
+    # b.delete(2)
     
-    print(repr(b))
+    # print(repr(b))
     
-    print ("***Deleting 84")
-    b.delete(84)
+    # print ("***Deleting 84")
+    # b.delete(84)
     
-    print(repr(b))
+    # print(repr(b))
     
 '''
 Here is the expected output from running this program. Depending on the order of 
@@ -922,5 +929,5 @@ def main():
         "milliseconds.")
     
 if __name__ == "__main__":
-    main()
+    # main()
     btreemain()
