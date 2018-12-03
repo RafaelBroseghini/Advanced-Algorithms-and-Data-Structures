@@ -71,26 +71,15 @@ class BTreeNode:
         return self as left and None for item and right. Otherwise, return 
         two new nodes and the item that will separate the two nodes in the parent. 
         '''
-        
-        print("Looking at node with index:", self.getIndex())
-        print("Node's items:", self.items)
-        print("Node's children:", self.child)
         if self.isLeaf():
             if not self.isFull():
-                print("Not Full Leaf!")
                 self.items[self.numberOfKeys] = item
                 self.items = sorted(self.items, key=lambda x: (x is None, x))
                 self.numberOfKeys += 1
-                print(self.items)
-                print("DONE")
-                return self, None, None
-            
-            print("Full leaf!")
-            print("Items:", self.items)
 
+                return self, None, None
             return BTreeNode.splitNode(self, bTree, item, None)
         else:
-            print("Not a leaf node!")
             index, done = 0, False
 
             while not done and self.items[index] < item:
@@ -99,7 +88,6 @@ class BTreeNode:
                 
                 index += 1
 
-            print("RECURSIVE CALL")
             leftIndex, promoted, rightIndex = BTreeNode.insert(bTree.nodes[self.getChild(index)], bTree, item)
 
             if promoted != None and not self.isFull():
@@ -108,7 +96,6 @@ class BTreeNode:
 
                 indexPromoted = self.items.index(promoted)
                 self.child.insert(indexPromoted+1, rightIndex)
-                print(self.child)
                 self.child.pop()
                 self.numberOfKeys += 1
             else:
@@ -131,9 +118,7 @@ class BTreeNode:
         items = self.items + [item]
         items.sort()
 
-        print(items)
         children = []
-
         indexInsertedItem = items.index(item)
 
         children.append(self.child[0])
@@ -146,18 +131,13 @@ class BTreeNode:
                 children.append(self.child[j])
                 j += 1
         
-        print(children)
         promotedItemIdx = len(items) // 2
         promotedItem = items[promotedItemIdx]
 
         self.items = items
         self.setNumberOfKeys(len(items[:promotedItemIdx]))
 
-        print("ITEMS", self.items)
-
         right = bTree.getFreeNode()
-        print("Created node with index:", right.getIndex())
-
         right.setNumberOfKeys(len(items[promotedItemIdx+1:]))
 
         z = 0
@@ -179,12 +159,6 @@ class BTreeNode:
         
         for i in range(len(self.child)-1,self.getNumberOfKeys(),-1):
             self.child[i] = None
-
-        print("\nLeft Node items:", items[:promotedItemIdx])
-        print("Promoted Item:", items[promotedItemIdx])
-        print("Right Node items:", right.items)
-
-        print("Children:", children)
         
         return self.getIndex(), promotedItem, right.getIndex()
 
@@ -204,21 +178,18 @@ class BTreeNode:
            and a deep copy of the item in the tree if it is found.
            As a side-effect, the tree is updated to delete the item.
         '''
-        if item in self.items:
-            itemIdx = self.items.index(item)
-            if self.isLeaf():
-                # Leaf nodes can have degree or less items.
-                print("I am a leaf node.")
-                if self.getNumberOfKeys() > bTree.degree:
-                    self.items.pop(itemIdx)
-                    self.items.append(None)
-                    self.numberOfKeys -= 1
+        itemIdx = None
+        for i in range(self.getNumberOfKeys()):
+            if self.items[i] == item:
+                itemIdx = i
 
-                    return item
-                else:
-                    # Rebalancing!
-                    self.redistributeOrCoalesce(bTree, self.getIndex())
-                    return item
+        if itemIdx != None:
+            if self.isLeaf():
+                self.items.pop(itemIdx)
+                self.items.append(None)
+                self.numberOfKeys -= 1
+                return item
+
             else:
                 # Get left most and may cause a rebalancing again.
                 rightChild = itemIdx + 1
@@ -234,9 +205,12 @@ class BTreeNode:
                     done = True
                 
                 index += 1
-            node = bTree.readFrom(self.getChild(index))
-            return BTreeNode.delete(node, bTree, item)
 
+            node = bTree.readFrom(self.getChild(index))
+            res = BTreeNode.delete(node, bTree, item)
+            # redistribute or coalesce.
+            self.redistributeOrCoalesce(bTree, index)
+            return item
 
         
     def redistributeOrCoalesce(self,bTree,childIndex):
@@ -255,9 +229,93 @@ class BTreeNode:
           side-effect of redistributing or coalescing
           the child node with a sibling if needed.
         '''
-        current = self
-        return
+        deletedChildNode = bTree.readFrom(self.getChild(childIndex))
 
+        if deletedChildNode.getNumberOfKeys() < bTree.degree:
+            if childIndex == 0:
+                rightSibling = bTree.readFrom(self.getChild(childIndex+1))
+                leftSibling = None
+                chosenSibling = rightSibling
+            elif childIndex == self.getNumberOfKeys():
+                leftSibling = bTree.readFrom(self.getChild(childIndex-1))
+                rightSibling = None
+                chosenSibling = leftSibling
+            else:
+                rightSibling = bTree.readFrom(self.getChild(childIndex+1))
+                leftSibling = bTree.readFrom(self.getChild(childIndex-1))
+                chosenSibling = max([rightSibling, leftSibling], key=lambda x:x.getNumberOfKeys())
+
+
+            if chosenSibling.getNumberOfKeys() > bTree.degree:
+                if chosenSibling == leftSibling:
+                    res = bTree.delete(leftSibling.items[leftSibling.getNumberOfKeys()-1])
+                    parentItem = self.items[childIndex-1] 
+                    self.items[childIndex-1] = res
+                    bTree.insert(parentItem)
+
+                else:
+                    res = bTree.delete(rightSibling.items[0])
+                    parentItem = self.items[childIndex] 
+                    self.items[childIndex] = res
+                    bTree.insert(parentItem)
+            else:
+                # Coalesce
+                if chosenSibling == leftSibling:
+                    parentItem = self.items[childIndex-1]
+                    # self.items[childIndex-1] = None
+                    self.numberOfKeys -= 1
+                else:
+                    parentItem = self.items[childIndex]
+                    # self.items[childIndex] = None
+                    self.numberOfKeys -= 1
+
+                for i in range(childIndex, len(self.items)-1):
+                    self.items[i] = self.items[i+1]
+                    self.child[i] = self.child[i+1]
+
+                    
+                if self.getNumberOfKeys() == 0:
+                    if self == bTree.rootNode:
+                        bTree.rootNode = chosenSibling
+                        bTree.rootIndex = chosenSibling.getIndex()
+                    
+                    tempItems = chosenSibling.items[:chosenSibling.getNumberOfKeys()] \
+                    + deletedChildNode.items[:deletedChildNode.getNumberOfKeys()] + [parentItem]
+                    tempChild = []
+                    
+                    tempItems.sort()
+
+                    for i in range(bTree.degree*2-(len(tempItems))):
+                        tempItems.append(None)
+                        tempChild.append(None)
+
+                    if chosenSibling.getIndex() == self.child[0]:
+                        for i in range(chosenSibling.getNumberOfKeys()+1):
+                            tempChild.append(chosenSibling.child[i])
+
+                        for i in range(deletedChildNode.getNumberOfKeys()+1):
+                            tempChild.append(deletedChildNode.child[i])
+                    else:
+                        for i in range(deletedChildNode.getNumberOfKeys()+1):
+                            tempChild.append(deletedChildNode.child[i])
+
+                        for i in range(chosenSibling.getNumberOfKeys()+1):
+                            tempChild.append(chosenSibling.child[i])
+
+                    chosenSibling.items = tempItems
+                    chosenSibling.child = tempChild
+
+                    chosenSibling.setNumberOfKeys(0)
+
+                    for item in chosenSibling.items:
+                        if item != None:
+                            chosenSibling.numberOfKeys += 1
+
+                else:
+                    bTree.insert(parentItem)
+                    for i in range(deletedChildNode.getNumberOfKeys()):
+                        res = deletedChildNode.items[i]
+                        bTree.insert(res)
 
     def getChild(self,i):
         # Answer the index of the ith child
@@ -363,7 +421,6 @@ class BTree:
         if data["found"] == False:
             return None
 
-        # node = self.readFrom(data["fileIndex"])
         return BTreeNode.delete(self.rootNode, self, anItem)
 
     def getFreeIndex(self):
@@ -444,9 +501,9 @@ class BTree:
         data = self.__searchTree(anItem)
 
         if data["found"] == True:
-            fileIndex = data["fileIndex"]
+            fileIndex, nodeIndex = data["fileIndex"], data["nodeIndex"]
 
-            return deepcopy(self.nodes[fileIndex])
+            return deepcopy(self.nodes[fileIndex].items[nodeIndex])
         
         return None
 
@@ -488,64 +545,382 @@ class BTree:
 def btreemain():
     print("My/Our name(s) is/are ")
 
-    lst = [100,80,220,140,120,180,200,500,150,90,110,160,170,130,190,151,152,111]
-    # lst = [100,80,220,140,120,180,200,500,150,90,110,160,170,130,190,151,152,111]
-    # lst = [10,8,22,14,12,18,2,50,15]
+    lst = [10,8,22,14,12,18,2,50,15]
     
     b = BTree(2)
-
+    
     for x in lst:
         print(repr(b))
-        print("="*60)
         print("***Inserting",x)
         b.insert(x)
     
-    print("\n-----Tree after all inserts.-----")
     print(repr(b))
-
-    # for x in lst:
-    #     print(x, x in b)
-
-    print(b.rootIndex)
-
-    # print(b.delete(500))
-    print(b.delete(111))
-    print(repr(b))
-    # print(repr(b))
     
-    # lst = [14,50,8,12,18,2,10,22,15]
+    lst = [14,50,8,12,18,2,10,22,15]
     
-    # for x in lst:
-    #     print("***Deleting",x)
-    #     b.delete(x) 
-    #     print(repr(b))
+    for x in lst:
+        print("***Deleting",x)
+        b.delete(x) 
+        print(repr(b))
     
-    # #return 
-    # lst = [54,76]
+    lst = [54,76]
     
-    # for x in lst:
-    #     print("***Deleting",x)
-    #     b.delete(x)
-    #     print(repr(b))
+    for x in lst:
+        print("***Deleting",x)
+        b.delete(x)
+        print(repr(b))
         
-    # print("***Inserting 14")
-    # b.insert(14)
+    print("***Inserting 14")
+    b.insert(14)
     
-    # print(repr(b))
+    print(repr(b))
     
-    # print("***Deleting 2")
-    # b.delete(2)
+    print("***Deleting 2")
+    b.delete(2)
     
-    # print(repr(b))
+    print(repr(b))
     
-    # print ("***Deleting 84")
-    # b.delete(84)
+    print ("***Deleting 84")
+    b.delete(84)
     
-    # print(repr(b))
+    print(repr(b))
+    
+'''
+Here is the expected output from running this program. Depending on the order of 
+redistributing or coalescing, your output may vary. However, the end result in 
+every case should be the insertion or deletion of the item from the BTree. 
+
+My/Our name(s) is/are 
+BTree(2,
+ {1: BTreeNode(2,0,[None, None, None, None],[None, None, None, None, None],1)
+},1,2)
+***Inserting 10
+BTree(2,
+ {1: BTreeNode(2,1,[10, None, None, None],[None, None, None, None, None],1)
+},1,2)
+***Inserting 8
+BTree(2,
+ {1: BTreeNode(2,2,[8, 10, None, None],[None, None, None, None, None],1)
+},1,2)
+***Inserting 22
+BTree(2,
+ {1: BTreeNode(2,3,[8, 10, 22, None],[None, None, None, None, None],1)
+},1,2)
+***Inserting 14
+BTree(2,
+ {1: BTreeNode(2,4,[8, 10, 14, 22],[None, None, None, None, None],1)
+},1,2)
+***Inserting 12
+BTree(2,
+ {1: BTreeNode(2,2,[8, 10, None, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,2,[14, 22, None, None],[None, None, None, None, None],2)
+, 3: BTreeNode(2,1,[12, None, None, None],[1, 2, None, None, None],3)
+},3,4)
+***Inserting 18
+BTree(2,
+ {1: BTreeNode(2,2,[8, 10, None, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,3,[14, 18, 22, None],[None, None, None, None, None],2)
+, 3: BTreeNode(2,1,[12, None, None, None],[1, 2, None, None, None],3)
+},3,4)
+***Inserting 2
+BTree(2,
+ {1: BTreeNode(2,3,[2, 8, 10, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,3,[14, 18, 22, None],[None, None, None, None, None],2)
+, 3: BTreeNode(2,1,[12, None, None, None],[1, 2, None, None, None],3)
+},3,4)
+***Inserting 50
+BTree(2,
+ {1: BTreeNode(2,3,[2, 8, 10, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,4,[14, 18, 22, 50],[None, None, None, None, None],2)
+, 3: BTreeNode(2,1,[12, None, None, None],[1, 2, None, None, None],3)
+},3,4)
+***Inserting 15
+BTree(2,
+ {1: BTreeNode(2,3,[2, 8, 10, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,2,[14, 15, None, None],[None, None, None, None, None],2)
+, 3: BTreeNode(2,2,[12, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,2,[22, 50, None, None],[None, None, None, None, None],4)
+},3,5)
+***Deleting 14
+**Redistribute From Left**
+BTree(2,
+ {1: BTreeNode(2,2,[2, 8, 10, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,2,[12, 15, None, None],[None, None, None, None, None],2)
+, 3: BTreeNode(2,2,[10, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,2,[22, 50, None, None],[None, None, None, None, None],4)
+},3,5)
+***Deleting 50
+**Coalesce with Left Sibling in node with index 3
+BTree(2,
+ {1: BTreeNode(2,2,[2, 8, 10, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,4,[12, 15, 18, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,1,[10, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},3,5)
+***Deleting 8
+**Redistribute From Right**
+BTree(2,
+ {1: BTreeNode(2,2,[2, 10, 10, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,3,[15, 18, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,1,[12, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},3,5)
+***Deleting 12
+BTree(2,
+ {1: BTreeNode(2,2,[2, 10, 10, None],[None, None, None, None, None],1)
+, 2: BTreeNode(2,2,[18, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,1,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},3,5)
+***Deleting 18
+**Coalesce with Left Sibling in node with index 3
+BTree(2,
+ {1: BTreeNode(2,4,[2, 10, 15, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Deleting 2
+BTree(2,
+ {1: BTreeNode(2,3,[10, 15, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Deleting 10
+BTree(2,
+ {1: BTreeNode(2,2,[15, 22, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Deleting 22
+BTree(2,
+ {1: BTreeNode(2,1,[15, 22, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Deleting 15
+BTree(2,
+ {1: BTreeNode(2,0,[15, 22, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Deleting 54
+54 not found during delete.
+BTree(2,
+ {1: BTreeNode(2,0,[15, 22, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Deleting 76
+76 not found during delete.
+BTree(2,
+ {1: BTreeNode(2,0,[15, 22, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Inserting 14
+BTree(2,
+ {1: BTreeNode(2,1,[14, 22, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Deleting 2
+2 not found during delete.
+BTree(2,
+ {1: BTreeNode(2,1,[14, 22, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+***Deleting 84
+84 not found during delete.
+BTree(2,
+ {1: BTreeNode(2,1,[14, 22, 22, 22],[None, None, None, None, None],1)
+, 2: BTreeNode(2,1,[22, 22, 22, 22],[None, None, None, None, None],2)
+, 3: BTreeNode(2,0,[15, 18, None, None],[1, 2, 4, None, None],3)
+, 4: BTreeNode(2,1,[22, 50, None, None],[None, None, None, None, None],4)
+},1,5)
+'''
+
+def readRecord(file,recNum,recSize):
+    file.seek(recNum*recSize)
+    record = file.read(recSize)
+    return record
+
+def readField(record,colTypes,fieldNum):
+    # fieldNum is zero based
+    # record is a string containing the record
+    # colTypes is the types for each of the columns in the record
+    
+    offset = 0
+    for i in range(fieldNum):
+        colType = colTypes[i]
+        
+        if colType == "int":
+            offset+=10
+        elif colType[:4] == "char":
+            size = int(colType[4:])
+            offset += size
+        elif colType == "float":
+            offset+=20
+        elif colType == "datetime":
+            offset+=24
+
+    colType = colTypes[fieldNum]
+
+    if colType == "int":
+        value = record[offset:offset+10].strip()
+        if value == "null":
+            val = None
+        else:
+            val = int(value)
+    elif colType == "float":
+        value = record[offset:offset+20].strip()
+        if value == "null":
+            val = None
+        else:        
+            val = float(value)
+    elif colType[:4] == "char":
+        size = int(colType[4:])
+        value = record[offset:offset+size].strip()
+        if value == "null":
+            val = None
+        else:        
+            val = value[1:-1] # remove the ' and ' from each end of the string
+            if type(val) == bytes:
+                val = val.decode("utf-8") 
+    elif colType == "datetime":
+        value = record[offset:offset+24].strip()
+        if value == "null":
+            val = None
+        else:        
+            if type(val) == bytes:
+                val = val.decode("utf-8") 
+            val = datetime.datetime.strptime(val,'%m/%d/%Y %I:%M:%S %p')
+    else:
+        print("Unrecognized Type")
+        raise Exception("Unrecognized Type") 
+    
+    return val
+
+class Item:
+    def __init__(self,key,value):
+        self.key = key
+        self.value = value
+    
+    def __repr__(self):
+        return "Item("+repr(self.key)+","+repr(self.value)+")"
+
+    def __eq__(self,other):
+        if type(self) != type(other):
+            return False
+
+        return self.key == other.key
+    
+    def __lt__(self,other):
+        return self.key < other.key
+    
+    def __gt__(self,other):
+        return self.key > other.key
+    
+    def __ge__(self,other):
+        return self.key >= other.key
+    
+    def getValue(self):
+        return self.value
+    
+    def getKey(self):
+        return self.key
+            
 
 def main():
-    btreemain()
-
-
+    # Select Feed.FeedNum, Feed.Name, FeedAttribType.Name, FeedAttribute.Value where
+    # Feed.FeedID = FeedAttribute.FeedID and FeedAttribute.FeedAtribTypeID = FeedAttribType.ID
+    attribTypeCols = ["int","char20","char60","int","int","int","int"]
+    feedCols = ["int","int","int","char50","datetime","float","float","int","char50","int"]
+    feedAttributeCols = ["int","int","float"]
+    
+    feedAttributeTable = open("FeedAttribute.tbl","r")
+    
+    if os.path.isfile("Feed.idx"):
+        indexFile = open("Feed.idx","r")
+        feedTableRecLength = int(indexFile.readline())
+        feedIndex = eval("".join(indexFile.readlines()))
+    else:
+        feedIndex = BTree(3)
+        feedTable = open("Feed.tbl","r")
+        offset = 0
+        for record in feedTable:
+            feedID = readField(record,feedCols,0)
+            anItem = Item(feedID,offset)
+            feedIndex.insert(anItem)
+            offset+=1
+            feedTableRecLength = len(record)
+         
+        print("Feed Table Index Created")  
+        indexFile = open("Feed.idx","w")
+        indexFile.write(str(feedTableRecLength)+"\n")
+        indexFile.write(repr(feedIndex)+"\n")
+        indexFile.close()
+        
+    if os.path.isfile("FeedAttribType.idx"):
+        indexFile = open("FeedAttribType.idx","r")
+        attribTypeTableRecLength = int(indexFile.readline())
+        attribTypeIndex = eval("".join(indexFile.readlines()))
+    else:
+        attribTypeIndex = BTree(3)
+        attribTable = open("FeedAttribType.tbl","r")
+        offset = 0
+        for record in attribTable:
+            feedAttribTypeID = readField(record,attribTypeCols,0)
+            anItem = Item(feedAttribTypeID,offset)
+            attribTypeIndex.insert(anItem)
+            offset+=1
+            attribTypeTableRecLength = len(record)
+         
+        print("Attrib Type Table Index Created")
+        indexFile = open("FeedAttribType.idx","w")
+        indexFile.write(str(attribTypeTableRecLength)+"\n")
+        indexFile.write(repr(attribTypeIndex)+"\n")
+        indexFile.close()
+    
+    feedTable = open("Feed.tbl","rb")
+    feedAttribTypeTable = open("FeedAttribType.tbl", "rb")
+    before = datetime.datetime.now()
+    for record in feedAttributeTable:
+        
+        feedID = readField(record,feedAttributeCols,0)
+        feedAttribTypeID = readField(record,feedAttributeCols,1)
+        value = readField(record,feedAttributeCols,2)
+          
+        lookupItem = Item(feedID,None)
+        item = feedIndex.retrieve(lookupItem)
+        offset = item.getValue()
+        feedRecord = readRecord(feedTable,offset,feedTableRecLength)   
+        feedNum = readField(feedRecord,feedCols,2)
+        feedName = readField(feedRecord,feedCols,3)
+        
+        lookupItem = Item(feedAttribTypeID,None)
+        item = attribTypeIndex.retrieve(lookupItem)
+        offset = item.getValue()
+        feedAttribTypeRecord = readRecord(feedAttribTypeTable,offset, \
+            attribTypeTableRecLength)               
+        feedAttribTypeName = readField(feedAttribTypeRecord,attribTypeCols,1)
+        
+        print(feedNum,feedName,feedAttribTypeName,value)
+    after = datetime.datetime.now()
+    deltaT = after - before
+    milliseconds = deltaT.total_seconds() * 1000    
+    print("Done. The total time for the query with indexing was",milliseconds, \
+        "milliseconds.")
+    
 if __name__ == "__main__":
     main()
+    btreemain()
