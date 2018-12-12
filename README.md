@@ -12,6 +12,7 @@ This repo is a collection of exercises/problems using implementation from scratc
 * **Bloom Filter**
 * **Trie**
 * **AVL Tree**
+* **B-Tree (All in memory)**
 
 ## Notes:
 * Can we achieve O(1) time complexity for building; lookup; removal; insert; etc... (Data Structure utopia)?
